@@ -34,4 +34,28 @@ input {
     margin-bottom: 16px;
     box-sizing: border-box;
     border: 1px solid #ccc;
-    border-radius: 
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.login-link {
+    text-align: center;
+}
+
+.login-link a {
+    color: #4caf50;
+    text-decoration: none;
+}
