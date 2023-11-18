@@ -1,27 +1,39 @@
 // app.js
 import mysql2 from 'mysql2';
-import {config} from '../config/config.js';
+import { config } from '../config/config.js';
 
-// Create a connection to the database
-const connection = mysql2.createConnection({
-    ...config,
-    authSwitchHandler: function ({ pluginName, data }, cb) {
-      if (pluginName === 'caching_sha2_password') {
-        // Use mysql_native_password as the authentication method
-        cb(null, Buffer.from('\0mysql_native_password'));
-      }
-    },
-  });
-  
-  // Connect to the database
-  connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to the database: ', err);
-      return;
-    }
+async function createConnection(dbConfig) {
+  const connection = await mysql2.createConnection(
+    dbConfig
+  ).promise();
+  try {
     console.log('Connected to the database');
-    // Perform your database operations here
-  });
+    return connection; // Retorna a conexão bem-sucedida
+  } catch (err) {
+    console.error(`Error connecting to database: ${err.message}`);
+    throw new Error(`Error connecting to database: ${err.message}`);
+  }
+};
 
-// Close the connection when done
-connection.end();
+async function executeQuery(connection) {
+  const [rows] = await connection.query(`select * from users`);
+  return rows;
+};
+
+async function endConnection(connection) {
+  try {
+    connection.end()
+    console.log(`Connection pool closed`)
+  } catch (err) {
+    throw new Error(`Error closing connection ${err.message}`)
+  }
+};
+
+const connection = await createConnection(config)
+let teste = await executeQuery(connection)
+console.log(teste)
+
+export {
+  createConnection,
+  endConnection
+}
