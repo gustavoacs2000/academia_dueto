@@ -23,7 +23,7 @@ async function executeQuery(connection) {
 async function endConnection(connection) {
   try {
     connection.end()
-    console.log(`Connection pool closed`)
+    console.log(`Connection closed`)
   } catch (err) {
     throw new Error(`Error closing connection ${err.message}`)
   }
@@ -32,6 +32,7 @@ async function endConnection(connection) {
 const connection = await createConnection(config)
 let teste = await executeQuery(connection)
 console.log(teste)
+await endConnection(connection)
 
 export {
   createConnection,
