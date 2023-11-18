@@ -1,5 +1,7 @@
 import express  from "express";
 import { router } from "./routes/index.js";
+import { loginRoute } from "./routes/login.js";
+import { registerRoute } from "./routes/register.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,10 +13,12 @@ app.use(express.static(path.join(__dirname, 'public/html')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(`/login`, loginRoute);
+app.use(`/register`, registerRoute);
 app.use('/', router);
 
 const server = app.listen(port, (() => {
-    console.log(`listening on port ${port}...`)
+    console.log(`listening on port ${port}...`);
 }));
 
 server.setTimeout(5400);
