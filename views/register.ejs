@@ -1,0 +1,84 @@
+<!-- register.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <link rel="stylesheet" href="/css/register.css">
+
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirm_password = document.getElementById("confirm_password").value;
+
+            if (password != confirm_password) {
+                alert("Passwords do not match");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <h1>Header Content</h1>
+            <!-- Add any other header content here -->
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+        <form action="/register" method="POST" onsubmit="return validatePassword()">
+            <div class="input-group">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>Footer Content</p>
+            <!-- Add any other footer content here -->
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirm_password = document.getElementById("confirm_password");
+            var confirm_password_value = confirm_password.value;
+            var error_message = document.getElementById("password-error");
+
+            if (password != confirm_password_value) {
+                confirm_password.classList.add("password-mismatch");
+                error_message.innerText = "Passwords do not match";
+                return false;
+            } else {
+                confirm_password.classList.remove("password-mismatch");
+                error_message.innerText = "";
+                return true;
+            }
+        }
+    </script>
+
+</body>
+</html>

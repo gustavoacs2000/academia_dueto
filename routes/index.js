@@ -1,27 +1,31 @@
-import express from "express";
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Pega o URL do arquivo e transforma ele no caminho para esse arquivo
+import express from 'express';
 
 const router = express.Router();
 
+// Landing Page
 router.get('/', (req, res) => {
-    const htmlPath = path.join(__dirname, '..', 'public', 'html', 'homePage.html');
-
-    // Read the HTML file
-    fs.readFile(htmlPath, 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-        } else {
-            // Send the HTML content as the response
-            res.send(data);
-        }
-    });
+    res.render('landing');
 });
 
-export {
-    router
-}
+// Login Page
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+// Register Page
+router.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// Videos Page
+router.get('/videos', (req, res) => {
+    // Fetch videos from Google Drive or any other source
+    const videos = [
+        { title: 'Video 1', completed: false },
+        { title: 'Video 2', completed: false },
+        // Add more videos here
+    ];
+    res.render('videos', { videos });
+});
+
+export default router;

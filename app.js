@@ -1,24 +1,21 @@
-import express  from "express";
-import { router } from "./routes/index.js";
-import { loginRoute } from "./routes/login.js";
-import { registerRoute } from "./routes/register.js";
+import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Pega o URL do arquivo e transforma ele no caminho para esse arquivo
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); 
 
 const app = express();
-const port = 3001;
-app.use(express.static(path.join(__dirname, 'public/html')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-app.use(`/login`, loginRoute);
-app.use(`/register`, registerRoute);
-app.use('/', router);
+// Set up view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-const server = app.listen(port, (() => {
-    console.log(`listening on port ${port}...`);
-}));
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-server.setTimeout(5400);
+// Routes
+import indexRouter from './routes/index.js';
+app.use('/', indexRouter);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
