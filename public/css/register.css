@@ -1,80 +1,68 @@
-/* register.css */
-.container {
+body {
+    background-color: #000000; /* Fundo escuro */
+    color: #fff; /* Texto branco */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
-header, footer {
-    background-color: #3e352b; /* Cor marrom */
-    color: #fff; /* Texto branco */
-    padding: 20px;
+.register-container {
     text-align: center;
+}
+
+.register-container img {
+    width: 200px;
+    margin-bottom: 20px;
 }
 
 form {
-    background-color: #f4f1ea; /* Cor de fundo similar à página principal */
-    padding: 40px;
-    border-radius: 10px; /* Bordas curvadas */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve */
-    max-width: 400px; /* Largura máxima do formulário */
-    width: 100%;
+    background-color: #3e3e3e; /* Fundo preto */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 300px;
 }
 
-.input-group {
-    margin-bottom: 20px; /* Adiciona espaço abaixo dos campos de entrada */
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    color: #3e352b; /* Cor marrom */
-    font-size: 18px; /* Tamanho da fonte aumentado */
-}
-
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px; /* Aumento do tamanho do padding */
-    border: 1px solid #ccc; /* Cor da borda */
-    border-radius: 5px; /* Bordas curvadas */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: calc(100% - 22px); /* Ajuste para incluir padding e border */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #333; /* Cor da borda escura */
+    border-radius: 5px;
     box-sizing: border-box;
-    font-size: 16px; /* Tamanho da fonte aumentado */
+    background-color: #121212; /* Fundo escuro para inputs */
+    color: #fff;
 }
 
-button {
-    display: block;
+form button {
     width: 100%;
     padding: 12px;
-    background-color: #392e25; /* Tom mais escuro */
-    color: #fff;
+    background-color: #ffffff;
+    color: #010101;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Transição suave */
-    font-size: 18px; /* Tamanho da fonte aumentado */
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px; /* Espaçamento para o botão de registro */
 }
 
-button:hover {
-    background-color: #463933; /* Tom mais escuro no hover */
+form button:hover {
+    background-color: #463933;
 }
 
-a {
+.login-link {
     display: block;
-    text-align: center;
-    color: #3e352b; /* Cor marrom */
+    margin-top: 10px;
+    color: #999;
     text-decoration: none;
-    font-size: 16px; /* Tamanho da fonte aumentado */
+    font-size: 0.9em;
 }
 
-/* register.css */
-input[type="email"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 16px;
-    margin-bottom: 20px; /* Adiciona espaço abaixo do campo de e-mail */
+.login-link:hover {
+    text-decoration: underline;
 }
