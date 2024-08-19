@@ -1,0 +1,81 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f1ea; /* Bege */
+    color: #332c25; /* Marrom */
+}
+
+.container {
+    position: relative;
+    width: 80%;
+    margin: 50px auto;
+    overflow: hidden; /* Adicionamos isso para evitar que as partituras ultrapassem o container */
+}
+
+.image-container {
+    float: left; /* Alinha as partituras à esquerda */
+    margin-right: 20px; /* Espaço entre as partituras e o texto */
+}
+
+.image-container img {
+    display: block;
+    width: 150px; /* Ajuste conforme necessário */
+    margin-bottom: 10px;
+}
+
+.text-container {
+    overflow: hidden; /* Corrige o problema de floats */
+    margin-left: 200px; /* Espaço para as partituras */
+}
+
+h1 {
+    text-align: center;
+    color: #3e352b; /* Marrom mais escuro */
+}
+
+.description {
+    margin-bottom: 20px;
+}
+
+.description p {
+    margin-bottom: 15px;
+}
+
+a {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+    background-color: #392e25; /* Tom mais escuro */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Transição suave */
+}
+
+a:hover {
+    background-color: #463933; /* Tom mais escuro no hover */
+}
+
+/* style.css */
+/* Adicione esses estilos para melhorar o visual das imagens */
+.image-container {
+    display: flex;
+    justify-content: center;
+}
+
+.image-container img {
+    display: block;
+    width: 300px; /* Largura ajustável conforme necessário */
+    border-radius: 10px; /* Bordas curvadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    margin: 0 10px; /* Espaço entre as imagens */
+    transition: transform 0.3s ease; /* Efeito de transição suave */
+}
+
+.image-container img:hover {
+    transform: scale(1.1); /* Efeito de escala ao passar o mouse */
+}
