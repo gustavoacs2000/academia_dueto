@@ -1,10 +1,40 @@
 import express from "express";
-
+import path from "path";
+import { __dirname } from "../app.js";
 const router = express.Router();
 
 // Landing Page
 router.get("/", (req, res) => {
-  res.render("landing");
+  const filePath = path.join(__dirname, "public", "index.html"); // Caminho absoluto
+  res.sendFile(filePath, (err) => {
+    // Melhor tratamento de erros
+    if (err) {
+      console.error("Erro ao enviar arquivo:", err); // Log de erro mais informativo
+      res.status(err.status || 500).send("Erro ao carregar a página."); // Resposta de erro para o cliente
+    }
+  });
+});
+
+router.get("/Estudio", (req, res) => {
+  const filePath = path.join(__dirname, "public", "estudio.html"); // Caminho absoluto
+  res.sendFile(filePath, (err) => {
+    // Melhor tratamento de erros
+    if (err) {
+      console.error("Erro ao enviar arquivo:", err); // Log de erro mais informativo
+      res.status(err.status || 500).send("Erro ao carregar a página."); // Resposta de erro para o cliente
+    }
+  });
+});
+
+router.get("/AulasEmGrupo", (req, res) => {
+  const filePath = path.join(__dirname, "public", "aulasGrupo.html"); // Caminho absoluto
+  res.sendFile(filePath, (err) => {
+    // Melhor tratamento de erros
+    if (err) {
+      console.error("Erro ao enviar arquivo:", err); // Log de erro mais informativo
+      res.status(err.status || 500).send("Erro ao carregar a página."); // Resposta de erro para o cliente
+    }
+  });
 });
 
 // Login Page
