@@ -1999,6 +1999,7 @@ ul.navbar-nav > li.header-get-a-quote:hover > a:after {
   position: relative;
   overflow: hidden;
   width: 100%;
+  height: 100%;
 }
 
 .project-item img {
@@ -2600,7 +2601,12 @@ img.testimonial-thumb {
 .breadcrumb li a:hover {
   color: #fff !important;
 }
-.breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+
+.breadcrumb li a:hover {
+  color: #a1a1a1 !important;
+}
+
+#5d779c .breadcrumb .breadcrumb-item + .breadcrumb-item::before {
   color: #fff;
 }
 
@@ -2619,6 +2625,7 @@ img.testimonial-thumb {
   outline: 0;
   border: 0;
 }
+
 .page-slider .carousel-control.left {
   left: 0;
 }
@@ -2641,8 +2648,10 @@ img.testimonial-thumb {
 }
 
 .page-slider.small-bg .item {
-  min-height: 330px;
+  min-height: 700px;
   background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .page-slider.small-bg .box-slider-content {
@@ -2655,7 +2664,7 @@ img.testimonial-thumb {
 }
 
 .page-slider.small-bg .box-slide-title {
-  font-size: 28px;
+  /* font-size: 28px; */
   color: #fff;
   font-weight: 900;
 }
