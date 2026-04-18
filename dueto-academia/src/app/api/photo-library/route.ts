@@ -15,11 +15,22 @@ export const runtime = "nodejs";
 
 const PUBLIC_DIR = path.resolve(process.cwd(), "public");
 const ADMIN_TOKEN = process.env.PHOTO_ADMIN_TOKEN ?? "dueto123";
+const IS_VERCEL = process.env.VERCEL === "1";
 
 function unauthorized() {
   return NextResponse.json(
     { error: "Nao autorizado. Informe o token de administrador." },
     { status: 401 },
+  );
+}
+
+function writeNotSupportedInVercel() {
+  return NextResponse.json(
+    {
+      error:
+        "Upload e edicao de fotos nao sao suportados no Vercel sem storage externo (Blob/S3 + banco).",
+    },
+    { status: 501 },
   );
 }
 
@@ -84,6 +95,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (IS_VERCEL) {
+    return writeNotSupportedInVercel();
+  }
+
   if (!ensureAuthorized(request)) {
     return unauthorized();
   }
@@ -147,6 +162,10 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (IS_VERCEL) {
+    return writeNotSupportedInVercel();
+  }
+
   if (!ensureAuthorized(request)) {
     return unauthorized();
   }
@@ -196,6 +215,10 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (IS_VERCEL) {
+    return writeNotSupportedInVercel();
+  }
+
   if (!ensureAuthorized(request)) {
     return unauthorized();
   }
