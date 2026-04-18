@@ -1,13 +1,57 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, Users, Music } from "lucide-react";
+import { readPhotoLibrary } from "@/lib/photoLibrary";
 
 export const metadata: Metadata = {
   title: "Cursos",
-  description: "ConheÃ§a os cursos de violino, viola de arco, violoncelo, violÃ£o e piano da Dueto Academia de MÃºsica em BrasÃ­lia.",
+  description: "Conheça os cursos de violino, viola de arco, violoncelo, violão e piano da Dueto Academia de Música em Brasília.",
 };
 
-// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+export const dynamic = "force-dynamic";
+
+const COURSE_PHOTO_SECTIONS = {
+  violino: {
+    section: "cursos_violino",
+    src: "/images/dueto/gallery-recital-181.jpg",
+    alt: "Aluna em solo de violino no palco",
+  },
+  viola: {
+    section: "cursos_viola",
+    src: "/images/dueto/gallery-recital-200.jpg",
+    alt: "Professor em apresentacao solo de viola",
+  },
+  violoncelo: {
+    section: "cursos_violoncelo",
+    src: "/images/dueto/course-violoncelo.jpg",
+    alt: "Aula de violoncelo na Dueto Academia",
+  },
+  violao: {
+    section: "cursos_violao",
+    src: "/images/dueto/course-violao.jpg",
+    alt: "Aula de violao na Dueto Academia",
+  },
+  piano: {
+    section: "cursos_piano",
+    src: "/images/dueto/teacher-alfredo.png",
+    alt: "Professor de piano da Dueto Academia",
+  },
+} as const;
+
+function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
+  const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
+  const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
+  const zoom = typeof photo.zoom === "number" ? Math.max(50, Math.min(200, photo.zoom)) : 100;
+
+  return {
+    objectPosition: `${focalX}% ${focalY}%`,
+    transform: `scale(${zoom / 100})`,
+    transformOrigin: `${focalX}% ${focalY}%`,
+  } as const;
+}
 
 const COURSES = [
   {
@@ -164,7 +208,7 @@ const COURSES = [
     bgTo: "#F0EBE0",
   },
 ];
-// --- Stars component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Stars component ──────────────────────────────────────────────────────────
 
 function DifficultyStars({ count, label }: { count: number; label: string }) {
   return (
@@ -179,9 +223,11 @@ function DifficultyStars({ count, label }: { count: number; label: string }) {
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function CursosPage() {
+export default async function CursosPage() {
+  const photoLibrary = await readPhotoLibrary();
+
   return (
     <div className="bg-[#FAF6EF] pt-16">
 
@@ -198,7 +244,7 @@ export default function CursosPage() {
           <em className="italic text-[#D4A843]/85" style={{ fontFamily: "'Cormorant Garamond', serif" }}>instrumento</em>
         </h1>
         <p className="text-white/42 text-sm max-w-xl mx-auto" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Cada curso tem mÃ©todo e repertÃ³rio adaptados ao instrumento e ao perfil do aluno.
+          Cada curso tem método e repertório adaptados ao instrumento e ao perfil do aluno.
         </p>
 
         {/* Quick nav */}
@@ -212,7 +258,12 @@ export default function CursosPage() {
       </div>
 
       {/* Course sections */}
-      {COURSES.map((course, index) => (
+      {COURSES.map((course, index) => {
+        const photoConfig = COURSE_PHOTO_SECTIONS[course.id as keyof typeof COURSE_PHOTO_SECTIONS];
+        const libraryPhoto = photoLibrary[photoConfig.section].items[0];
+        const coursePhoto = libraryPhoto ?? photoConfig;
+
+        return (
         <section
           key={course.id}
           id={course.id}
@@ -223,7 +274,7 @@ export default function CursosPage() {
           <div className="mx-auto max-w-6xl">
             <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 ${index % 2 !== 0 ? "lg:[&>*:first-child]:order-2" : ""}`}>
 
-              {/* Left â€” main info */}
+              {/* Left — main info */}
               <div>
                 {/* Emoji + name */}
                 <div className="flex items-center gap-4 mb-6">
@@ -236,7 +287,7 @@ export default function CursosPage() {
 
                 {/* Difficulty */}
                 <div className="mb-6">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>NÃ­vel de dificuldade</p>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Nível de dificuldade</p>
                   <DifficultyStars count={course.difficulty} label={course.difficultyLabel} />
                 </div>
 
@@ -272,12 +323,28 @@ export default function CursosPage() {
                 </Link>
               </div>
 
-              {/* Right â€” content + levels */}
+              {/* Right — content + levels */}
               <div className="flex flex-col gap-6">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-[#1A2E4A]/8 bg-stone-100 shadow-lg shadow-[#1A2E4A]/10">
+                  <Image
+                    src={coursePhoto.src}
+                    alt={coursePhoto.alt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    className="object-cover"
+                    style={objectStyleFromPhoto(coursePhoto)}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
+                  />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: "linear-gradient(to top, rgba(10,18,32,0.45) 0%, rgba(10,18,32,0) 60%)" }}
+                  />
+                </div>
 
                 {/* Content */}
                 <div className="rounded-2xl border border-[#1A2E4A]/8 bg-white p-6">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>O que vocÃª vai aprender</p>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>O que você vai aprender</p>
                   <div className="flex flex-col gap-2.5">
                     {course.content.map((item) => (
                       <div key={item} className="flex items-start gap-2.5">
@@ -290,7 +357,7 @@ export default function CursosPage() {
 
                 {/* Levels */}
                 <div className="rounded-2xl border border-[#1A2E4A]/8 bg-white p-6">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Turmas disponÃ­veis</p>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Turmas disponíveis</p>
                   <div className="flex flex-col gap-3">
                     {course.levels.map((level, i) => (
                       <div key={i} className="flex items-start justify-between gap-3 pb-3 border-b border-stone-50 last:border-b-0 last:pb-0">
@@ -317,15 +384,16 @@ export default function CursosPage() {
             </div>
           </div>
         </section>
-      ))}
+        );
+      })}
 
       {/* CTA final */}
       <div className="bg-[#0A1220] py-20 text-center px-6">
         <h2 className="font-normal text-white mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 400 }}>
-          NÃ£o sabe qual instrumento escolher?
+          Não sabe qual instrumento escolher?
         </h2>
         <p className="text-white/42 text-sm max-w-md mx-auto mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Agende uma aula experimental gratuita e nossos professores vÃ£o te ajudar a encontrar o instrumento certo para o seu perfil.
+          Agende uma aula experimental gratuita e nossos professores vão te ajudar a encontrar o instrumento certo para o seu perfil.
         </p>
         <Link href="/contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#D4A843] text-[#0A1220] text-sm font-medium hover:bg-[#e6bc5a] transition-all" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           Agendar aula experimental gratuita

@@ -1,15 +1,39 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { GraduationCap, Award, Music, ArrowRight } from "lucide-react";
 import { InstagramIcon, YoutubeIcon } from "@/components/dueto/SocialBrandIcons";
+import { readPhotoLibrary } from "@/lib/photoLibrary";
 
 export const metadata: Metadata = {
   title: "Professores",
   description: "Conheca os professores da Dueto Academia de Musica em Brasilia.",
 };
 
-// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+export const dynamic = "force-dynamic";
+
+const TEACHER_PHOTO_SECTIONS = {
+  guilherme: "professores_guilherme",
+  jordana: "professores_jordana",
+  gabriel: "professores_gabriel",
+  lucas: "professores_lucas",
+  hellen: "professores_hellen",
+  alfredo: "professores_alfredo",
+} as const;
+
+function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
+  const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
+  const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
+  const zoom = typeof photo.zoom === "number" ? Math.max(50, Math.min(200, photo.zoom)) : 100;
+
+  return {
+    objectPosition: `${focalX}% ${focalY}%`,
+    transform: `scale(${zoom / 100})`,
+    transformOrigin: `${focalX}% ${focalY}%`,
+  } as const;
+}
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const TEACHERS = [
   {
@@ -139,19 +163,21 @@ const ICON_MAP = {
   music:      Music,
 };
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ProfessoresPage() {
+export default async function ProfessoresPage() {
+  const photoLibrary = await readPhotoLibrary();
+
   return (
     <div className="bg-[#FAF6EF] pt-16">
 
-      {/* â”€â”€ Page header â”€â”€ */}
+      {/* ── Page header ── */}
       <div className="bg-[#0A1220] py-20 lg:py-28 px-6 lg:px-16 text-center relative overflow-hidden">
         {/* Staff lines */}
         <div className="pointer-events-none absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "repeating-linear-gradient(180deg, transparent 0px, transparent 38px, rgba(212,168,67,0.5) 38px, rgba(212,168,67,0.5) 39px)", backgroundSize: "100% 50px" }} />
         <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#D4A843]/60 flex items-center justify-center gap-2 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           <span className="w-5 h-px bg-[#D4A843]/35" />
-          ConheÃ§a o time
+          Conheça o time
           <span className="w-5 h-px bg-[#D4A843]/35" />
         </p>
         <h1 className="font-normal text-white" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400 }}>
@@ -159,13 +185,16 @@ export default function ProfessoresPage() {
           <em className="italic text-[#D4A843]/85" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Dueto</em>
         </h1>
         <p className="text-white/45 text-sm max-w-xl mx-auto mt-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Dois mÃºsicos com formaÃ§Ã£o sÃ³lida, anos de palco e um amor genuÃ­no por ensinar.
+          Dois músicos com formação sólida, anos de palco e um amor genuíno por ensinar.
         </p>
       </div>
 
-      {/* â”€â”€ Teacher cards â”€â”€ */}
+      {/* ── Teacher cards ── */}
       <div className="mx-auto max-w-6xl px-6 lg:px-16 py-20 lg:py-28 flex flex-col gap-20">
         {TEACHERS.map((teacher, index) => {
+          const photoSection = TEACHER_PHOTO_SECTIONS[teacher.id as keyof typeof TEACHER_PHOTO_SECTIONS];
+          const libraryPhoto = photoLibrary[photoSection].items[0];
+          const teacherPhoto = libraryPhoto ?? { src: teacher.imageSrc, alt: teacher.imageAlt };
           const isEven = index % 2 === 0;
           return (
             <div
@@ -177,11 +206,12 @@ export default function ProfessoresPage() {
                 <div className="absolute inset-4 rounded-2xl opacity-40" style={{ background: "linear-gradient(145deg, #C8A878 0%, #1A2E4A 100%)" }} />
                 <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden border border-[#1A2E4A]/8 shadow-xl shadow-[#1A2E4A]/10">
                   <Image
-                    src={teacher.imageSrc}
-                    alt={teacher.imageAlt}
+                    src={teacherPhoto.src}
+                    alt={teacherPhoto.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover object-top"
+                    className="object-cover"
+                    style={objectStyleFromPhoto(teacherPhoto)}
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
                   />
@@ -218,7 +248,7 @@ export default function ProfessoresPage() {
                 {/* Credentials */}
                 <div className="rounded-xl border border-[#1A2E4A]/8 bg-white p-5 mb-6">
                   <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    FormaÃ§Ã£o & credenciais
+                    Formação & credenciais
                   </p>
                   <div className="flex flex-col gap-3">
                     {teacher.credentials.map((cred, i) => {
@@ -276,7 +306,7 @@ export default function ProfessoresPage() {
       <div className="bg-[#0A1220] py-16 px-6 text-center">
         <span className="text-5xl text-[#D4A843]/20 font-normal" style={{ fontFamily: "'Cormorant Garamond', serif" }}>"</span>
         <p className="text-white/45 text-base italic max-w-lg mx-auto mt-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Ensinar mÃºsica Ã© abrir uma porta para uma linguagem que existe hÃ¡ sÃ©culos e nunca envelhece.
+          Ensinar música é abrir uma porta para uma linguagem que existe há séculos e nunca envelhece.
         </p>
         <p className="text-[#D4A843]/50 text-[10px] tracking-widest uppercase mt-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Equipe Dueto</p>
       </div>

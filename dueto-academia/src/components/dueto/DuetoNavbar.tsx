@@ -1,12 +1,13 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Music } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-// â”€â”€â”€ Nav links â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Nav links ────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
     { label: "Home", href: "/" },
@@ -17,14 +18,14 @@ const NAV_LINKS = [
             { label: "Violino", href: "/cursos#violino" },
             { label: "Viola de Arco", href: "/cursos#viola" },
             { label: "Violoncelo", href: "/cursos#violoncelo" },
-            { label: "ViolÃ£o", href: "/cursos#violao" },
+            { label: "Violão", href: "/cursos#violao" },
             { label: "Piano", href: "/cursos#piano" },
         ],
     },
     { label: "Contato", href: "/contato" },
 ];
 
-// â”€â”€â”€ Main component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function DuetoNavbar() {
     const pathname = usePathname();
@@ -66,29 +67,22 @@ export default function DuetoNavbar() {
             >
                 <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
 
-                    {/* â”€â”€ Logo â”€â”€ */}
-                    <Link href="/" className="flex items-center gap-2.5 group" aria-label="Dueto Academia â€” pÃ¡gina inicial">
-                        <div className="w-8 h-8 rounded-lg bg-[#1A2E4A]/8 flex items-center justify-center">
-                            <Music size={16} className="text-[#1A2E4A]/70" />
-                        </div>
-                        <div>
-                            <p
-                                className="text-[#0F1820] font-normal leading-tight tracking-wide"
-                                style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.1rem", letterSpacing: "0.03em" }}
-                            >
-                                Dueto Academia
-                            </p>
-                            <p
-                                className="text-[#1A2E4A]/45 text-[8px] tracking-[0.16em] uppercase leading-none"
-                                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                            >
-                                de MÃºsica
-                            </p>
+                    {/* ── Logo ── */}
+                    <Link href="/" className="flex items-center gap-2.5 group" aria-label="Dueto Academia — página inicial">
+                        <div className="relative w-[74px] h-[50px]">
+                            <Image
+                                src="/images/dueto/brand-logo-blue.png"
+                                alt="Logo da Dueto Academia de Música"
+                                fill
+                                sizes="74px"
+                                priority
+                                className="object-contain object-left"
+                            />
                         </div>
                     </Link>
 
-                    {/* â”€â”€ Desktop nav â”€â”€ */}
-                    <nav className="hidden lg:flex items-center gap-1" aria-label="NavegaÃ§Ã£o principal">
+                    {/* ── Desktop nav ── */}
+                    <nav className="hidden lg:flex items-center gap-1" aria-label="Navegação principal">
                         {NAV_LINKS.map((link) => (
                             <div key={link.href} className="relative">
                                 {link.submenu ? (
@@ -154,7 +148,7 @@ export default function DuetoNavbar() {
                         ))}
                     </nav>
 
-                    {/* â”€â”€ Desktop CTA â”€â”€ */}
+                    {/* ── Desktop CTA ── */}
                     <Link
                         href="/contato"
                         className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1A2E4A] text-white text-xs font-medium hover:bg-[#243d5e] transition-all duration-200"
@@ -163,7 +157,7 @@ export default function DuetoNavbar() {
                         Matricular-se
                     </Link>
 
-                    {/* â”€â”€ Mobile button â”€â”€ */}
+                    {/* ── Mobile button ── */}
                     <button
                         className="lg:hidden w-9 h-9 flex items-center justify-center text-[#1A2E4A]/60 hover:text-[#1A2E4A] transition-colors"
                         onClick={() => setMobileOpen(v => !v)}
@@ -175,7 +169,7 @@ export default function DuetoNavbar() {
                 </div>
             </header>
 
-            {/* â”€â”€ Mobile menu â”€â”€ */}
+            {/* ── Mobile menu ── */}
             <AnimatePresence>
                 {mobileOpen && (
                     <motion.div

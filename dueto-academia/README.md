@@ -34,3 +34,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Painel simples de fotos
+
+Foi adicionado um painel interno em `/admin/fotos` para gerenciar imagens por seção do site:
+
+- Home • Abertura
+- Home • Filosofia
+- Home • Galeria
+- Contato • Foto principal
+
+### Como usar
+
+1. Crie um `.env.local` usando `.env.example`.
+2. Defina `PHOTO_ADMIN_TOKEN` com um valor forte.
+3. Rode `npm run dev`.
+4. Acesse `http://localhost:3000/admin/fotos`.
+5. Informe o token, carregue as fotos, e depois adicione/exclua as imagens.
+
+Observação:
+- Upload e exclusão funcionam em `public/images/dueto/uploads/...`.
+- Seções de foto única substituem a foto anterior automaticamente.
+- Esse fluxo depende de escrita em disco local (servidor com filesystem persistente).

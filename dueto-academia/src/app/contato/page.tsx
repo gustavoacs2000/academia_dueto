@@ -1,12 +1,12 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertCircle, MapPin } from "lucide-react";
 import { InstagramIcon, YoutubeIcon } from "@/components/dueto/SocialBrandIcons";
 
-// metadata must be in a server component — move to a separate file if needed
+// metadata must be in a server component - move to a separate file if needed
 // export const metadata: Metadata = { title: "Contato", description: "..." };
 
 interface FormData {
@@ -19,14 +19,23 @@ interface FormData {
   message: string;
 }
 
-const COURSES = ["Violino", "Viola de Arco", "Violoncelo", "Violão", "Piano", "Ainda não sei"];
-const SCHEDULES = ["Manhã (8h–12h)", "Tarde (13h–17h)", "Noite (18h–21h)", "Sábado", "Qualquer horário"];
+const COURSES = ["Violino", "Viola de Arco", "Violoncelo", "ViolÃ£o", "Piano", "Ainda nÃ£o sei"];
+const SCHEDULES = ["ManhÃ£ (8h-12h)", "Tarde (13h-17h)", "Noite (18h-21h)", "SÃ¡bado", "Qualquer horÃ¡rio"];
+const MAPS_URL =
+  "https://www.google.com/maps/place/Dueto+Academia+de+M%C3%BAsica/@-15.8358993,-47.9813545,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3367f5e8d41f:0x1f1a1f4d09e38497!8m2!3d-15.8359045!4d-47.9787796!16s%2Fg%2F11ptmc9m53?hl=pt-BR&entry=ttu&g_ep=EgoyMDI2MDQwOC4wIKXMDSoASAFQAw%3D%3D";
+const CONTACT_FALLBACK = {
+  src: "/images/dueto/hero-dueto.jpeg",
+  alt: "Entrada da Dueto Academia de Musica em Brasilia",
+  focalX: 50,
+  focalY: 50,
+  zoom: 90,
+};
 
 function validate(data: FormData): Record<string, string> {
   const errors: Record<string, string> = {};
   if (!data.name.trim())  errors.name  = "Informe seu nome";
-  if (data.phone.replace(/\D/g, "").length < 10) errors.phone = "Telefone inválido";
-  if (!data.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errors.email = "E-mail inválido";
+  if (data.phone.replace(/\D/g, "").length < 10) errors.phone = "Telefone invÃ¡lido";
+  if (!data.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errors.email = "E-mail invÃ¡lido";
   if (!data.course)       errors.course = "Selecione um curso";
   return errors;
 }
@@ -77,6 +86,40 @@ export default function ContatoPage() {
   const [errors, setErrors]       = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
+  const [contactPhoto, setContactPhoto] = useState(CONTACT_FALLBACK);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadContactPhoto() {
+      try {
+        const response = await fetch("/api/photo-library", { cache: "no-store" });
+        if (!response.ok) return;
+
+        const payload = (await response.json()) as {
+          library?: { contato_capa?: { items?: { src: string; alt: string; focalX?: number; focalY?: number; zoom?: number }[] } };
+        };
+
+        const first = payload.library?.contato_capa?.items?.[0];
+        if (!first || !active) return;
+
+        setContactPhoto({
+          src: first.src || CONTACT_FALLBACK.src,
+          alt: first.alt || CONTACT_FALLBACK.alt,
+          focalX: typeof first.focalX === "number" ? first.focalX : CONTACT_FALLBACK.focalX,
+          focalY: typeof first.focalY === "number" ? first.focalY : CONTACT_FALLBACK.focalY,
+          zoom: typeof first.zoom === "number" ? first.zoom : CONTACT_FALLBACK.zoom,
+        });
+      } catch {
+        // MantÃ©m fallback em caso de falha na leitura da biblioteca.
+      }
+    }
+
+    void loadContactPhoto();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const onChange = useCallback((field: keyof FormData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -108,7 +151,7 @@ export default function ContatoPage() {
           <em className="italic text-[#D4A843]/85" style={{ fontFamily: "'Cormorant Garamond', serif" }}>musical</em>
         </h1>
         <p className="text-white/42 text-sm max-w-md mx-auto mt-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          A primeira aula é sempre gratuita. Sem compromisso.
+          A primeira aula Ã© sempre gratuita. Sem compromisso.
         </p>
       </div>
 
@@ -116,16 +159,21 @@ export default function ContatoPage() {
       <div className="mx-auto max-w-6xl px-6 lg:px-16 py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-start">
 
-          {/* LEFT — Image + info */}
+          {/* LEFT - Image + info */}
           <div className="flex flex-col gap-8">
             {/* Academy image */}
-            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-[#1A2E4A]/8 shadow-xl shadow-[#1A2E4A]/8">
+            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-[#1A2E4A]/8 shadow-xl shadow-[#1A2E4A]/8 bg-[#0A1220]/10">
               <Image
-                src="/images/dueto/contato-academia.jpg"
-                alt="Entrada da Dueto Academia de Música em Brasília"
+                src={contactPhoto.src}
+                alt={contactPhoto.alt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover"
+                style={{
+                  objectPosition: `${contactPhoto.focalX ?? 50}% ${contactPhoto.focalY ?? 50}%`,
+                  transform: `scale(${(contactPhoto.zoom ?? 100) / 100})`,
+                  transformOrigin: `${contactPhoto.focalX ?? 50}% ${contactPhoto.focalY ?? 50}%`,
+                }}
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
               />
@@ -134,10 +182,10 @@ export default function ContatoPage() {
             {/* Contact info */}
             <div className="flex flex-col gap-4">
               {[
-                { icon: <MapPin size={16}/>,     label: "Endereço", value: "SQS 316, Bloco B, Ap. 101 — Asa Sul, Brasília–DF" },
-                { icon: <WhatsAppIcon />,          label: "WhatsApp", value: "(61) 9 9999-9999",    href: "https://wa.me/5561999999999" },
-                { icon: <InstagramIcon size={16} />, label: "Instagram", value: "@duetoacademia",      href: "https://instagram.com/duetoacademia" },
-                { icon: <YoutubeIcon size={16} />,   label: "YouTube",   value: "@duetoacademia",      href: "https://youtube.com/@duetoacademia" },
+                { icon: <MapPin size={16}/>,     label: "EndereÃ§o", value: "SQS 316, Bloco B, Ap. 101 - Asa Sul, BrasÃ­lia-DF", href: MAPS_URL },
+                { icon: <WhatsAppIcon />,            label: "WhatsApp", value: "(61) 99502-9627", href: "https://wa.me/5561995029627" },
+                { icon: <InstagramIcon size={16} />, label: "Instagram", value: "@duetoacademiademusica", href: "https://www.instagram.com/duetoacademiademusica/" },
+                { icon: <YoutubeIcon size={16} />,   label: "YouTube",   value: "@duetoacademiademusica", href: "https://www.youtube.com/@duetoacademiademusica" },
               ].map(({ icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-[#1A2E4A]/6 border border-[#1A2E4A]/8 flex items-center justify-center text-[#1A2E4A]/50 shrink-0">
@@ -157,10 +205,10 @@ export default function ContatoPage() {
 
             {/* Hours */}
             <div className="rounded-xl border border-[#1A2E4A]/8 bg-white p-5">
-              <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Horários de funcionamento</p>
+              <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>HorÃ¡rios de funcionamento</p>
               {[
-                { day: "Segunda a Sexta", hours: "8h às 21h" },
-                { day: "Sábado",          hours: "8h às 14h" },
+                { day: "Segunda a Sexta", hours: "8h Ã s 21h" },
+                { day: "SÃ¡bado",          hours: "8h Ã s 14h" },
                 { day: "Domingo",         hours: "Fechado" },
               ].map(({ day, hours }) => (
                 <div key={day} className="flex justify-between py-2 border-b border-stone-50 last:border-b-0">
@@ -171,12 +219,12 @@ export default function ContatoPage() {
             </div>
           </div>
 
-          {/* RIGHT — Form */}
+          {/* RIGHT - Form */}
           <div className="rounded-2xl border border-[#1A2E4A]/8 bg-white overflow-hidden shadow-xl shadow-[#1A2E4A]/6">
             {/* Navy header */}
             <div className="bg-[#1A2E4A] px-7 py-5">
-              <p className="text-white font-normal text-base" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Formulário de contato</p>
-              <p className="text-white/40 text-[10px] mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Primeira aula gratuita · Sem compromisso</p>
+              <p className="text-white font-normal text-base" style={{ fontFamily: "'Cormorant Garamond', serif" }}>FormulÃ¡rio de contato</p>
+              <p className="text-white/40 text-[10px] mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Primeira aula gratuita Â· Sem compromisso</p>
             </div>
 
             <div className="px-7 py-7">
@@ -189,10 +237,10 @@ export default function ContatoPage() {
                   <div>
                     <h3 className="font-normal text-[#0F1820] mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.4rem" }}>Mensagem recebida!</h3>
                     <p className="text-sm text-stone-400 max-w-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                      Entraremos em contato em até <strong className="text-[#0F1820]">24 horas</strong> para confirmar sua aula experimental.
+                      Entraremos em contato em atÃ© <strong className="text-[#0F1820]">24 horas</strong> para confirmar sua aula experimental.
                     </p>
                   </div>
-                  <a href="https://wa.me/5561999999999" target="_blank" rel="noopener noreferrer"
+                  <a href="https://wa.me/5561995029627" target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1A2E4A] text-white text-xs font-medium" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     Falar pelo WhatsApp
                   </a>
@@ -205,7 +253,7 @@ export default function ContatoPage() {
                       <input type="text" value={data.name} onChange={e => onChange("name", e.target.value)} placeholder="Nome completo" className={inputCls(!!errors.name)} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
                     </Field>
                     <Field label="WhatsApp" required error={errors.phone}>
-                      <input type="tel" value={data.phone} onChange={e => onChange("phone", maskPhone(e.target.value))} placeholder="(61) 9 9999-9999" maxLength={15} className={inputCls(!!errors.phone)} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
+                      <input type="tel" value={data.phone} onChange={e => onChange("phone", maskPhone(e.target.value))} placeholder="(61) 99502-9627" maxLength={15} className={inputCls(!!errors.phone)} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
                     </Field>
                   </div>
 
@@ -227,7 +275,7 @@ export default function ContatoPage() {
                         {COURSES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </Field>
-                    <Field label="Horário preferido">
+                    <Field label="HorÃ¡rio preferido">
                       <select value={data.schedule} onChange={e => onChange("schedule", e.target.value)} className={`${inputCls()} cursor-pointer`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                         <option value="">Selecione (opcional)</option>
                         {SCHEDULES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -237,11 +285,11 @@ export default function ContatoPage() {
 
                   {/* Message */}
                   <Field label="Mensagem (opcional)">
-                    <textarea value={data.message} onChange={e => onChange("message", e.target.value)} placeholder="Conte sobre você, seus objetivos musicais ou qualquer dúvida..." rows={3} className={`${inputCls()} resize-none`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
+                    <textarea value={data.message} onChange={e => onChange("message", e.target.value)} placeholder="Conte sobre vocÃª, seus objetivos musicais ou qualquer dÃºvida..." rows={3} className={`${inputCls()} resize-none`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
                   </Field>
 
                   <p className="text-[10px] text-stone-400" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    Seus dados são confidenciais e usados apenas para entrar em contato sobre sua matrícula.
+                    Seus dados sÃ£o confidenciais e usados apenas para entrar em contato sobre sua matrÃ­cula.
                   </p>
 
                   <div className="pt-2 border-t border-stone-50">
@@ -262,3 +310,5 @@ export default function ContatoPage() {
     </div>
   );
 }
+
+

@@ -9,7 +9,7 @@ const SOCIALS = [
   {
     id: "instagram",
     label: "Instagram",
-    href: "https://instagram.com/duetoacademia",
+    href: "https://www.instagram.com/duetoacademiademusica/",
     color: "#E1306C",
     bg: "rgba(225,48,108,0.12)",
     border: "rgba(225,48,108,0.25)",
@@ -24,7 +24,7 @@ const SOCIALS = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    href: "https://wa.me/5561999999999?text=Ol%C3%A1%21+Gostaria+de+informa%C3%A7%C3%B5es+sobre+a+Dueto+Academia.",
+    href: "https://wa.me/5561995029627?text=Ol%C3%A1%21+Gostaria+de+informa%C3%A7%C3%B5es+sobre+a+Dueto+Academia.",
     color: "#25D366",
     bg: "rgba(37,211,102,0.12)",
     border: "rgba(37,211,102,0.25)",
@@ -38,7 +38,7 @@ const SOCIALS = [
   {
     id: "youtube",
     label: "YouTube",
-    href: "https://youtube.com/@duetoacademia",
+    href: "https://www.youtube.com/@duetoacademiademusica",
     color: "#FF0000",
     bg: "rgba(255,0,0,0.10)",
     border: "rgba(255,0,0,0.22)",

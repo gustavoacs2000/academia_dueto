@@ -1,5 +1,5 @@
-﻿import Link from "next/link";
-import { Music } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { InstagramIcon, YoutubeIcon } from "./SocialBrandIcons";
 
 function WhatsAppIcon() {
@@ -22,7 +22,7 @@ const COURSES = [
   { label: "Violino",       href: "/cursos#violino"    },
   { label: "Viola de Arco", href: "/cursos#viola"      },
   { label: "Violoncelo",    href: "/cursos#violoncelo" },
-  { label: "ViolÃ£o",        href: "/cursos#violao"     },
+  { label: "Violão",        href: "/cursos#violao"     },
   { label: "Piano",         href: "/cursos#piano"      },
 ];
 
@@ -37,26 +37,37 @@ export default function DuetoFooter() {
 
         {/* Brand */}
         <div>
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-white/8 flex items-center justify-center">
-              <Music size={15} className="text-[#D4A843]/80" />
+          <div className="flex items-end gap-4 mb-5">
+            <div className="relative w-[180px] h-[132px] shrink-0">
+              <Image
+                src="/images/dueto/brand-logo-white.png"
+                alt="Logo da Dueto Academia de Música"
+                fill
+                sizes="180px"
+                className="object-contain object-left"
+              />
             </div>
-            <div>
-              <p className="text-white font-normal leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.1rem", letterSpacing: "0.03em" }}>Dueto Academia</p>
-              <p className="text-white/38 text-[8px] tracking-[0.16em] uppercase" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>de MÃºsica</p>
+            <div className="relative w-16 h-16 mb-2 hidden sm:block">
+              <Image
+                src="/images/dueto/brand-sublogo-white.png"
+                alt="Sublogo da Dueto Academia de Música"
+                fill
+                sizes="64px"
+                className="object-contain"
+              />
             </div>
           </div>
 
           <p className="text-sm leading-relaxed text-white/40 mb-6 max-w-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            EspaÃ§o acolhedor para aprender mÃºsica em BrasÃ­lia. Violino, viola, violoncelo, violÃ£o e piano para todas as idades.
+            Espaço acolhedor para aprender música em Brasília. Violino, viola, violoncelo, violão e piano para todas as idades.
           </p>
 
           {/* Social icons */}
           <div className="flex items-center gap-2">
             {[
-              { icon: <InstagramIcon size={15} />, href: "https://instagram.com/duetoacademia",  label: "Instagram", color: "hover:text-[#E1306C]" },
-              { icon: <WhatsAppIcon />,        href: "https://wa.me/5561999999999",           label: "WhatsApp",  color: "hover:text-[#25D366]" },
-              { icon: <YoutubeIcon size={15} />, href: "https://youtube.com/@duetoacademia",   label: "YouTube",   color: "hover:text-[#FF0000]"  },
+              { icon: <InstagramIcon size={15} />, href: "https://www.instagram.com/duetoacademiademusica/", label: "Instagram", color: "hover:text-[#E1306C]" },
+              { icon: <WhatsAppIcon />,            href: "https://wa.me/5561995029627",                        label: "WhatsApp",  color: "hover:text-[#25D366]" },
+              { icon: <YoutubeIcon size={15} />,   href: "https://www.youtube.com/@duetoacademiademusica",    label: "YouTube",   color: "hover:text-[#FF0000]"  },
             ].map(({ icon, href, label, color }) => (
               <a
                 key={label}
@@ -74,7 +85,7 @@ export default function DuetoFooter() {
 
         {/* Nav */}
         <div>
-          <p className="text-[9px] font-semibold tracking-widest uppercase text-white/22 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>PÃ¡ginas</p>
+          <p className="text-[9px] font-semibold tracking-widest uppercase text-white/22 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Páginas</p>
           <div className="flex flex-col gap-2.5">
             {LINKS.map(link => (
               <Link key={link.href} href={link.href} className="text-sm text-white/42 hover:text-white/80 transition-colors duration-200" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{link.label}</Link>
@@ -96,10 +107,10 @@ export default function DuetoFooter() {
         <div>
           <p className="text-[9px] font-semibold tracking-widest uppercase text-white/22 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Contato</p>
           <div className="flex flex-col gap-3 text-sm text-white/42" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            <p>ðŸ“ BrasÃ­lia â€” DF</p>
-            <a href="https://wa.me/5561999999999" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">WhatsApp</a>
-            <a href="https://instagram.com/duetoacademia" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">Instagram</a>
-            <a href="https://youtube.com/@duetoacademia" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">YouTube</a>
+            <p>📍 Brasília — DF</p>
+            <a href="https://wa.me/5561995029627" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">WhatsApp</a>
+            <a href="https://www.instagram.com/duetoacademiademusica/" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">Instagram</a>
+            <a href="https://www.youtube.com/@duetoacademiademusica" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">YouTube</a>
           </div>
         </div>
 
@@ -108,8 +119,8 @@ export default function DuetoFooter() {
       {/* Bottom */}
       <div className="border-t border-white/5">
         <div className="mx-auto max-w-6xl px-6 lg:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-[11px] text-white/18" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Â© {year} Dueto Academia de MÃºsica. Todos os direitos reservados.</p>
-          <p className="text-[11px] text-white/15" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>BrasÃ­lia â€” DF</p>
+          <p className="text-[11px] text-white/18" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>© {year} Dueto Academia de Música. Todos os direitos reservados.</p>
+          <p className="text-[11px] text-white/15" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Brasília — DF</p>
         </div>
       </div>
 
