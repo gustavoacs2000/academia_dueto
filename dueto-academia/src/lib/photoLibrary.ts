@@ -300,8 +300,21 @@ function normalizeLibrary(raw: unknown): PhotoLibrary {
   return normalized;
 }
 
+function blobToken(): string | undefined {
+  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  if (!token) return undefined;
+
+  const first = token[0];
+  const last = token[token.length - 1];
+  if ((first === "\"" || first === "'") && first === last) {
+    return token.slice(1, -1).trim();
+  }
+
+  return token;
+}
+
 function hasBlobStorage(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  return Boolean(blobToken());
 }
 
 async function readFallbackPhotoLibrary(): Promise<PhotoLibrary> {
@@ -324,6 +337,7 @@ async function readBlobTextWithAccess(
 ): Promise<string | null> {
   const result = await get(pathname, {
     access,
+    token: blobToken(),
     useCache: false,
   });
 
@@ -337,8 +351,8 @@ async function readBlobTextWithAccess(
 async function readBlobText(pathname: string): Promise<string | null> {
   try {
     return await readBlobTextWithAccess(pathname, "public");
-  } catch (publicError) {
-    console.error("Falha ao ler biblioteca no Blob publico. Tentando modo privado.", publicError);
+  } catch {
+    // The store can be private while images are still being migrated.
   }
 
   return readBlobTextWithAccess(pathname, "private");
@@ -361,6 +375,7 @@ async function writeBlobPhotoLibrary(library: PhotoLibrary): Promise<void> {
     allowOverwrite: true,
     contentType: "application/json; charset=utf-8",
     cacheControlMaxAge: BLOB_JSON_CACHE_SECONDS,
+    token: blobToken(),
   });
 }
 
@@ -377,8 +392,8 @@ export async function ensurePhotoLibraryFile(): Promise<void> {
       if (!library) {
         await seedBlobPhotoLibrary();
       }
-    } catch (error) {
-      console.error("Falha ao preparar biblioteca de fotos no Vercel Blob.", error);
+    } catch {
+      // GET requests can continue with the bundled fallback if Blob is not ready.
     }
 
     return;
@@ -401,8 +416,7 @@ export async function readPhotoLibrary(): Promise<PhotoLibrary> {
       if (library) return library;
 
       return await seedBlobPhotoLibrary();
-    } catch (error) {
-      console.error("Falha ao ler biblioteca de fotos no Vercel Blob. Usando fallback local.", error);
+    } catch {
       return readFallbackPhotoLibrary();
     }
   }
@@ -483,6 +497,7 @@ export async function writeManagedPhotoFile(
       allowOverwrite: false,
       contentType,
       cacheControlMaxAge: BLOB_IMAGE_CACHE_SECONDS,
+      token: blobToken(),
     });
 
     return blob.url;
@@ -502,7 +517,7 @@ export async function removeManagedFileIfExists(src: string): Promise<void> {
   const blobPathname = resolveBlobUploadPathname(src);
   if (blobPathname && hasBlobStorage()) {
     try {
-      await del(src);
+      await del(src, { token: blobToken() });
     } catch (error) {
       console.error("Falha ao remover foto do Vercel Blob.", error);
     }
