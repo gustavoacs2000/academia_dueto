@@ -16,28 +16,34 @@ export const dynamic = "force-dynamic";
 const COURSE_PHOTO_SECTIONS = {
   violino: {
     section: "cursos_violino",
-    src: "/images/dueto/gallery-recital-181.jpg",
+    src: "/images/dueto/gallery-recital-181.webp",
     alt: "Aluna em solo de violino no palco",
   },
   viola: {
     section: "cursos_viola",
-    src: "/images/dueto/gallery-recital-200.jpg",
+    src: "/images/dueto/gallery-recital-200.webp",
     alt: "Professor em apresentacao solo de viola",
   },
   violoncelo: {
     section: "cursos_violoncelo",
-    src: "/images/dueto/course-violoncelo.jpg",
+    src: "/images/dueto/course-violoncelo.webp",
     alt: "Aula de violoncelo na Dueto Academia",
   },
   violao: {
     section: "cursos_violao",
-    src: "/images/dueto/course-violao.jpg",
+    src: "/images/dueto/course-violao.webp",
     alt: "Aula de violao na Dueto Academia",
+    focalX: 50,
+    focalY: 50,
+    zoom: 90,
   },
   piano: {
     section: "cursos_piano",
-    src: "/images/dueto/teacher-alfredo.png",
-    alt: "Professor de piano da Dueto Academia",
+    src: "/images/dueto/course-piano.jpeg",
+    alt: "Pessoa tocando piano na Dueto Academia",
+    focalX: 50,
+    focalY: 50,
+    zoom: 100,
   },
 } as const;
 

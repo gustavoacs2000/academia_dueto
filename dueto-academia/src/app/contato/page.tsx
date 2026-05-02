@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
@@ -25,7 +25,7 @@ const SCHEDULES = ["Manhã (9h-12h)", "Tarde (13h-17h)", "Noite (18h-20h)", "Sá
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=QI%2025%2C%20bl.%20A%20-%20Ed.%20Real%20Mix%2C%20sala%20Cobertura%205%20-%20Guar%C3%A1%202%2C%20Bras%C3%ADlia%20-%20DF";
 const CONTACT_FALLBACK = {
-  src: "/images/dueto/contato-academia.jpeg",
+  src: "/images/dueto/contato-academia.webp",
   alt: "Entrada da Dueto Academia de Musica em Brasilia",
   focalX: 50,
   focalY: 5,

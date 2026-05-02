@@ -21,7 +21,7 @@
     "items": [
       {
         "id": "default-home-filosofia",
-        "src": "/images/dueto/filosofia-sala.jpg",
+        "src": "/images/dueto/filosofia-sala.webp",
         "alt": "Sala de aula acolhedora da Dueto Academia"
       }
     ]
@@ -33,94 +33,94 @@
     "items": [
       {
         "id": "default-g-009",
-        "src": "/images/dueto/gallery-recital-009.jpg",
+        "src": "/images/dueto/gallery-recital-009.webp",
         "alt": "Orquestra de alunos em apresentação no recital",
         "focalX": 50,
         "focalY": 50
       },
       {
         "id": "default-g-018",
-        "src": "/images/dueto/gallery-recital-018.jpg",
+        "src": "/images/dueto/gallery-recital-018.webp",
         "alt": "Professora e alunos tocando violino no recital",
         "focalX": 50,
         "focalY": 50
       },
       {
         "id": "default-g-181",
-        "src": "/images/dueto/gallery-recital-181.jpg",
+        "src": "/images/dueto/gallery-recital-181.webp",
         "alt": "Aluna em solo de violino no palco",
         "focalX": 50,
         "focalY": 50
       },
       {
         "id": "default-g-188",
-        "src": "/images/dueto/gallery-recital-188.jpg",
+        "src": "/images/dueto/gallery-recital-188.webp",
         "alt": "Aluno em solo de violino durante o recital",
         "focalX": 50,
         "focalY": 50
       },
       {
         "id": "default-g-200",
-        "src": "/images/dueto/gallery-recital-200.jpg",
+        "src": "/images/dueto/gallery-recital-200.webp",
         "alt": "Professor em apresentação solo de viola"
       },
       {
         "id": "default-g-250",
-        "src": "/images/dueto/gallery-recital-250.jpg",
+        "src": "/images/dueto/gallery-recital-250.webp",
         "alt": "Alunos e professores no palco durante recital",
         "focalX": 50,
         "focalY": 37
       },
       {
         "id": "default-g-286",
-        "src": "/images/dueto/gallery-recital-286.jpg",
+        "src": "/images/dueto/gallery-recital-286.webp",
         "alt": "Aluna tocando violino ao lado da árvore de Natal"
       },
       {
         "id": "default-g-299",
-        "src": "/images/dueto/gallery-recital-299.jpg",
+        "src": "/images/dueto/gallery-recital-299.webp",
         "alt": "Apresentação coletiva de violinos no palco"
       },
       {
         "id": "default-g-327",
-        "src": "/images/dueto/gallery-recital-327.jpg",
+        "src": "/images/dueto/gallery-recital-327.webp",
         "alt": "Professor em apresentação de violino no recital"
       },
       {
         "id": "default-g-329",
-        "src": "/images/dueto/gallery-recital-329.jpg",
+        "src": "/images/dueto/gallery-recital-329.webp",
         "alt": "Aluno se apresentando com violino no recital"
       },
       {
         "id": "default-g-344",
-        "src": "/images/dueto/gallery-recital-344.jpg",
+        "src": "/images/dueto/gallery-recital-344.webp",
         "alt": "Foto oficial do grupo após o recital"
       },
       {
         "id": "default-g-352",
-        "src": "/images/dueto/gallery-recital-352.jpg",
+        "src": "/images/dueto/gallery-recital-352.webp",
         "alt": "Turma reunida na cerimônia de encerramento"
       },
       {
         "id": "default-g-581",
-        "src": "/images/dueto/gallery-recital-581.jpg",
+        "src": "/images/dueto/gallery-recital-581.webp",
         "alt": "Aluna em performance de violino no palco"
       },
       {
         "id": "default-g-796",
-        "src": "/images/dueto/gallery-recital-796.jpg",
+        "src": "/images/dueto/gallery-recital-796.webp",
         "alt": "Dueto de cordas em apresentação no recital"
       },
       {
         "id": "default-g-871",
-        "src": "/images/dueto/gallery-recital-871.jpg",
+        "src": "/images/dueto/gallery-recital-871.webp",
         "alt": "Professor em solo de viola no recital",
         "focalX": 3,
         "focalY": 50
       },
       {
         "id": "default-g-1260",
-        "src": "/images/dueto/gallery-recital-1260.jpg",
+        "src": "/images/dueto/gallery-recital-1260.webp",
         "alt": "Grupo de alunos e professores após apresentação",
         "focalX": 22,
         "focalY": 50
@@ -134,7 +134,7 @@
     "items": [
       {
         "id": "default-contato-capa",
-        "src": "/images/dueto/contato-academia.jpeg",
+        "src": "/images/dueto/contato-academia.webp",
         "alt": "Entrada da Dueto Academia de Música em Brasília",
         "focalX": 50,
         "focalY": 5

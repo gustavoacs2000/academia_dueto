@@ -22,7 +22,11 @@ const TEACHER_PHOTO_SECTIONS = {
 } as const;
 
 const TEACHER_PHOTO_DEFAULTS = {
-  lucas: { focalX: 58, focalY: 50 },
+  guilherme: { focalX: 50, focalY: 20, zoom: 100 },
+  jordana: { focalX: 50, focalY: 18, zoom: 100 },
+  gabriel: { focalX: 50, focalY: 18, zoom: 100 },
+  lucas: { focalX: 44, focalY: 20, zoom: 106 },
+  hellen: { focalX: 50, focalY: 16, zoom: 100 },
   alfredo: { focalX: 42, focalY: 50 },
 } as const;
 

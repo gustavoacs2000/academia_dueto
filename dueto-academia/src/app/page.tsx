@@ -16,7 +16,7 @@ const HERO_FALLBACK = {
   alt: "Aluna tocando violino na Dueto Academia de Música",
 };
 const FILOSOFIA_FALLBACK = {
-  src: "/images/dueto/filosofia-sala.jpg",
+  src: "/images/dueto/filosofia-sala.webp",
   alt: "Sala de aula acolhedora da Dueto Academia",
 };
 
@@ -70,22 +70,22 @@ const REVIEWS = [
 ];
 
 const GALLERY = [
-  { src: "/images/dueto/gallery-recital-009.jpg",  alt: "Orquestra de alunos em apresentação no recital", wide: true  },
-  { src: "/images/dueto/gallery-recital-018.jpg",  alt: "Professora e alunos tocando violino no recital", wide: true  },
-  { src: "/images/dueto/gallery-recital-181.jpg",  alt: "Aluna em solo de violino no palco",              wide: false },
-  { src: "/images/dueto/gallery-recital-188.jpg",  alt: "Aluno em solo de violino durante o recital",     wide: false },
-  { src: "/images/dueto/gallery-recital-200.jpg",  alt: "Professor em apresentação solo de viola",         wide: false },
-  { src: "/images/dueto/gallery-recital-250.jpg",  alt: "Alunos e professores no palco durante recital",   wide: true  },
-  { src: "/images/dueto/gallery-recital-286.jpg",  alt: "Aluna tocando violino ao lado da árvore de Natal",wide: false },
-  { src: "/images/dueto/gallery-recital-299.jpg",  alt: "Apresentação coletiva de violinos no palco",      wide: true  },
-  { src: "/images/dueto/gallery-recital-327.jpg",  alt: "Professor em apresentação de violino no recital", wide: false },
-  { src: "/images/dueto/gallery-recital-329.jpg",  alt: "Aluno se apresentando com violino no recital",    wide: true  },
-  { src: "/images/dueto/gallery-recital-344.jpg",  alt: "Foto oficial do grupo após o recital",            wide: true  },
-  { src: "/images/dueto/gallery-recital-352.jpg",  alt: "Turma reunida na cerimônia de encerramento",      wide: true  },
-  { src: "/images/dueto/gallery-recital-581.jpg",  alt: "Aluna em performance de violino no palco",        wide: true  },
-  { src: "/images/dueto/gallery-recital-796.jpg",  alt: "Dueto de cordas em apresentação no recital",      wide: true  },
-  { src: "/images/dueto/gallery-recital-871.jpg",  alt: "Professor em solo de viola no recital",           wide: true  },
-  { src: "/images/dueto/gallery-recital-1260.jpg", alt: "Grupo de alunos e professores após apresentação", wide: true  },
+  { src: "/images/dueto/gallery-recital-009.webp",  alt: "Orquestra de alunos em apresentação no recital", wide: true  },
+  { src: "/images/dueto/gallery-recital-018.webp",  alt: "Professora e alunos tocando violino no recital", wide: true  },
+  { src: "/images/dueto/gallery-recital-181.webp",  alt: "Aluna em solo de violino no palco",              wide: false },
+  { src: "/images/dueto/gallery-recital-188.webp",  alt: "Aluno em solo de violino durante o recital",     wide: false },
+  { src: "/images/dueto/gallery-recital-200.webp",  alt: "Professor em apresentação solo de viola",         wide: false },
+  { src: "/images/dueto/gallery-recital-250.webp",  alt: "Alunos e professores no palco durante recital",   wide: true  },
+  { src: "/images/dueto/gallery-recital-286.webp",  alt: "Aluna tocando violino ao lado da árvore de Natal",wide: false },
+  { src: "/images/dueto/gallery-recital-299.webp",  alt: "Apresentação coletiva de violinos no palco",      wide: true  },
+  { src: "/images/dueto/gallery-recital-327.webp",  alt: "Professor em apresentação de violino no recital", wide: false },
+  { src: "/images/dueto/gallery-recital-329.webp",  alt: "Aluno se apresentando com violino no recital",    wide: true  },
+  { src: "/images/dueto/gallery-recital-344.webp",  alt: "Foto oficial do grupo após o recital",            wide: true  },
+  { src: "/images/dueto/gallery-recital-352.webp",  alt: "Turma reunida na cerimônia de encerramento",      wide: true  },
+  { src: "/images/dueto/gallery-recital-581.webp",  alt: "Aluna em performance de violino no palco",        wide: true  },
+  { src: "/images/dueto/gallery-recital-796.webp",  alt: "Dueto de cordas em apresentação no recital",      wide: true  },
+  { src: "/images/dueto/gallery-recital-871.webp",  alt: "Professor em solo de viola no recital",           wide: true  },
+  { src: "/images/dueto/gallery-recital-1260.webp", alt: "Grupo de alunos e professores após apresentação", wide: true  },
 ];
 
 // --- Reusable stars -----------------------------------------------------------

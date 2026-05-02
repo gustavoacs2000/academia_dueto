@@ -45,7 +45,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-home-filosofia",
-        src: "/images/dueto/filosofia-sala.jpg",
+        src: "/images/dueto/filosofia-sala.webp",
         alt: "Sala de aula acolhedora da Dueto Academia",
       },
     ],
@@ -55,22 +55,22 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     label: PHOTO_SECTION_META.home_galeria.label,
     multiple: PHOTO_SECTION_META.home_galeria.multiple,
     items: [
-      { id: "default-g-009", src: "/images/dueto/gallery-recital-009.jpg", alt: "Orquestra de alunos em apresentacao no recital" },
-      { id: "default-g-018", src: "/images/dueto/gallery-recital-018.jpg", alt: "Professora e alunos tocando violino no recital" },
-      { id: "default-g-181", src: "/images/dueto/gallery-recital-181.jpg", alt: "Aluna em solo de violino no palco" },
-      { id: "default-g-188", src: "/images/dueto/gallery-recital-188.jpg", alt: "Aluno em solo de violino durante o recital" },
-      { id: "default-g-200", src: "/images/dueto/gallery-recital-200.jpg", alt: "Professor em apresentacao solo de viola" },
-      { id: "default-g-250", src: "/images/dueto/gallery-recital-250.jpg", alt: "Alunos e professores no palco durante recital" },
-      { id: "default-g-286", src: "/images/dueto/gallery-recital-286.jpg", alt: "Aluna tocando violino ao lado da arvore de Natal" },
-      { id: "default-g-299", src: "/images/dueto/gallery-recital-299.jpg", alt: "Apresentacao coletiva de violinos no palco" },
-      { id: "default-g-327", src: "/images/dueto/gallery-recital-327.jpg", alt: "Professor em apresentacao de violino no recital" },
-      { id: "default-g-329", src: "/images/dueto/gallery-recital-329.jpg", alt: "Aluno se apresentando com violino no recital" },
-      { id: "default-g-344", src: "/images/dueto/gallery-recital-344.jpg", alt: "Foto oficial do grupo apos o recital" },
-      { id: "default-g-352", src: "/images/dueto/gallery-recital-352.jpg", alt: "Turma reunida na cerimonia de encerramento" },
-      { id: "default-g-581", src: "/images/dueto/gallery-recital-581.jpg", alt: "Aluna em performance de violino no palco" },
-      { id: "default-g-796", src: "/images/dueto/gallery-recital-796.jpg", alt: "Dueto de cordas em apresentacao no recital" },
-      { id: "default-g-871", src: "/images/dueto/gallery-recital-871.jpg", alt: "Professor em solo de viola no recital" },
-      { id: "default-g-1260", src: "/images/dueto/gallery-recital-1260.jpg", alt: "Grupo de alunos e professores apos apresentacao" },
+      { id: "default-g-009", src: "/images/dueto/gallery-recital-009.webp", alt: "Orquestra de alunos em apresentacao no recital" },
+      { id: "default-g-018", src: "/images/dueto/gallery-recital-018.webp", alt: "Professora e alunos tocando violino no recital" },
+      { id: "default-g-181", src: "/images/dueto/gallery-recital-181.webp", alt: "Aluna em solo de violino no palco" },
+      { id: "default-g-188", src: "/images/dueto/gallery-recital-188.webp", alt: "Aluno em solo de violino durante o recital" },
+      { id: "default-g-200", src: "/images/dueto/gallery-recital-200.webp", alt: "Professor em apresentacao solo de viola" },
+      { id: "default-g-250", src: "/images/dueto/gallery-recital-250.webp", alt: "Alunos e professores no palco durante recital" },
+      { id: "default-g-286", src: "/images/dueto/gallery-recital-286.webp", alt: "Aluna tocando violino ao lado da arvore de Natal" },
+      { id: "default-g-299", src: "/images/dueto/gallery-recital-299.webp", alt: "Apresentacao coletiva de violinos no palco" },
+      { id: "default-g-327", src: "/images/dueto/gallery-recital-327.webp", alt: "Professor em apresentacao de violino no recital" },
+      { id: "default-g-329", src: "/images/dueto/gallery-recital-329.webp", alt: "Aluno se apresentando com violino no recital" },
+      { id: "default-g-344", src: "/images/dueto/gallery-recital-344.webp", alt: "Foto oficial do grupo apos o recital" },
+      { id: "default-g-352", src: "/images/dueto/gallery-recital-352.webp", alt: "Turma reunida na cerimonia de encerramento" },
+      { id: "default-g-581", src: "/images/dueto/gallery-recital-581.webp", alt: "Aluna em performance de violino no palco" },
+      { id: "default-g-796", src: "/images/dueto/gallery-recital-796.webp", alt: "Dueto de cordas em apresentacao no recital" },
+      { id: "default-g-871", src: "/images/dueto/gallery-recital-871.webp", alt: "Professor em solo de viola no recital" },
+      { id: "default-g-1260", src: "/images/dueto/gallery-recital-1260.webp", alt: "Grupo de alunos e professores apos apresentacao" },
     ],
   },
   contato_capa: {
@@ -80,7 +80,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-contato-capa",
-        src: "/images/dueto/contato-academia.jpeg",
+        src: "/images/dueto/contato-academia.webp",
         alt: "Entrada da Dueto Academia de Musica em Brasilia",
       },
     ],
@@ -92,7 +92,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-violino",
-        src: "/images/dueto/gallery-recital-181.jpg",
+        src: "/images/dueto/gallery-recital-181.webp",
         alt: "Aluna em solo de violino no palco",
       },
     ],
@@ -104,7 +104,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-viola",
-        src: "/images/dueto/gallery-recital-200.jpg",
+        src: "/images/dueto/gallery-recital-200.webp",
         alt: "Professor em apresentacao solo de viola",
       },
     ],
@@ -116,7 +116,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-violoncelo",
-        src: "/images/dueto/course-violoncelo.jpg",
+        src: "/images/dueto/course-violoncelo.webp",
         alt: "Aula de violoncelo na Dueto Academia",
       },
     ],
@@ -128,8 +128,11 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-violao",
-        src: "/images/dueto/course-violao.jpg",
+        src: "/images/dueto/course-violao.webp",
         alt: "Aula de violao na Dueto Academia",
+        focalX: 50,
+        focalY: 50,
+        zoom: 90,
       },
     ],
   },
@@ -140,8 +143,11 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-piano",
-        src: "/images/dueto/teacher-alfredo.png",
-        alt: "Professor de piano da Dueto Academia",
+        src: "/images/dueto/course-piano.jpeg",
+        alt: "Pessoa tocando piano na Dueto Academia",
+        focalX: 50,
+        focalY: 50,
+        zoom: 100,
       },
     ],
   },
@@ -154,6 +160,9 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
         id: "default-prof-guilherme",
         src: "/images/dueto/teacher-guilherme.jpeg",
         alt: "Guilherme Alexander, professor de violino",
+        focalX: 50,
+        focalY: 20,
+        zoom: 100,
       },
     ],
   },
@@ -166,6 +175,9 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
         id: "default-prof-jordana",
         src: "/images/dueto/teacher-jordana.jpeg",
         alt: "Jordana Rodrigues, professora de violino",
+        focalX: 50,
+        focalY: 18,
+        zoom: 100,
       },
     ],
   },
@@ -178,6 +190,9 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
         id: "default-prof-gabriel",
         src: "/images/dueto/teacher-gabriel.jpeg",
         alt: "Gabriel Mendes, professor de violino",
+        focalX: 50,
+        focalY: 18,
+        zoom: 100,
       },
     ],
   },
@@ -190,6 +205,9 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
         id: "default-prof-lucas",
         src: "/images/dueto/teacher-lucas.jpeg",
         alt: "Lucas Rezende, professor de violao",
+        focalX: 44,
+        focalY: 20,
+        zoom: 106,
       },
     ],
   },
@@ -202,6 +220,9 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
         id: "default-prof-hellen",
         src: "/images/dueto/teacher-hellen.jpeg",
         alt: "Hellen Alvares, professora de violoncelo",
+        focalX: 50,
+        focalY: 16,
+        zoom: 100,
       },
     ],
   },
@@ -266,6 +287,33 @@ function normalizeItem(item: unknown): PhotoItem | null {
   };
 }
 
+function mergeFallbackItemDefaults(item: PhotoItem, fallbackItem: PhotoItem | undefined): PhotoItem {
+  if (!fallbackItem || item.id !== fallbackItem.id) {
+    return item;
+  }
+
+  const merged: PhotoItem = { ...item };
+
+  if (item.src === "/images/dueto/teacher-alfredo.png" && fallbackItem.src === "/images/dueto/course-piano.jpeg") {
+    merged.src = fallbackItem.src;
+    merged.alt = fallbackItem.alt;
+  }
+
+  if (typeof merged.focalX !== "number" && typeof fallbackItem.focalX === "number") {
+    merged.focalX = fallbackItem.focalX;
+  }
+
+  if (typeof merged.focalY !== "number" && typeof fallbackItem.focalY === "number") {
+    merged.focalY = fallbackItem.focalY;
+  }
+
+  if (typeof merged.zoom !== "number" && typeof fallbackItem.zoom === "number") {
+    merged.zoom = fallbackItem.zoom;
+  }
+
+  return merged;
+}
+
 function normalizeSection(key: PhotoSectionKey, section: unknown, fallback: PhotoSection): PhotoSection {
   if (!section || typeof section !== "object") {
     return fallback;
@@ -273,7 +321,15 @@ function normalizeSection(key: PhotoSectionKey, section: unknown, fallback: Phot
 
   const candidate = section as Partial<PhotoSection>;
   const rawItems = Array.isArray(candidate.items) ? candidate.items : [];
-  const items = rawItems.map(normalizeItem).filter((item): item is PhotoItem => Boolean(item));
+  const items = rawItems
+    .map(normalizeItem)
+    .filter((item): item is PhotoItem => Boolean(item))
+    .map((item) =>
+      mergeFallbackItemDefaults(
+        item,
+        fallback.items.find((fallbackItem) => fallbackItem.id === item.id),
+      ),
+    );
 
   return {
     key,
