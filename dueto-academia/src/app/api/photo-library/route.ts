@@ -1,4 +1,3 @@
-﻿import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { NextResponse } from "next/server";
@@ -8,12 +7,12 @@ import {
   createPhotoItem,
   readPhotoLibrary,
   removeManagedFileIfExists,
+  writeManagedPhotoFile,
   writePhotoLibrary,
 } from "@/lib/photoLibrary";
 
 export const runtime = "nodejs";
 
-const PUBLIC_DIR = path.resolve(process.cwd(), "public");
 const ADMIN_TOKEN = process.env.PHOTO_ADMIN_TOKEN?.trim() || "dueto123";
 
 function unauthorized() {
@@ -117,14 +116,8 @@ export async function POST(request: Request) {
   const safeName = sanitizeFilename(fileInput.name || "foto");
   const base = path.basename(safeName, path.extname(safeName)) || "foto";
   const generatedName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${base}${extension}`;
-  const relativeDirectory = path.join("images", "dueto", "uploads", sectionKey);
-  const absoluteDirectory = path.join(PUBLIC_DIR, relativeDirectory);
-  const absoluteFilePath = path.join(absoluteDirectory, generatedName);
-  const publicSrc = `/${relativeDirectory.replace(/\\/g, "/")}/${generatedName}`;
-
-  await fs.mkdir(absoluteDirectory, { recursive: true });
   const fileBuffer = Buffer.from(await fileInput.arrayBuffer());
-  await fs.writeFile(absoluteFilePath, fileBuffer);
+  const publicSrc = await writeManagedPhotoFile(sectionKey, generatedName, fileBuffer, fileInput.type);
 
   const library = await readPhotoLibrary();
   const section = library[sectionKey];

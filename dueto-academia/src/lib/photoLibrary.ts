@@ -2,6 +2,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
+import { del, get, put } from "@vercel/blob";
+
 import {
   PHOTO_SECTION_KEYS,
   PHOTO_SECTION_META,
@@ -14,6 +16,10 @@ import {
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "photo-library.json");
 const PUBLIC_DIR = path.resolve(process.cwd(), "public");
+const BLOB_LIBRARY_PATH = "dueto/photo-library.json";
+const BLOB_UPLOAD_PREFIX = "dueto/uploads";
+const BLOB_JSON_CACHE_SECONDS = 60;
+const BLOB_IMAGE_CACHE_SECONDS = 60 * 60 * 24 * 365;
 const DEFAULT_FOCAL_POSITION = 50;
 const DEFAULT_ZOOM = 100;
 const MIN_ZOOM = 50;
@@ -294,7 +300,69 @@ function normalizeLibrary(raw: unknown): PhotoLibrary {
   return normalized;
 }
 
+function hasBlobStorage(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+}
+
+async function readLocalPhotoLibrary(): Promise<PhotoLibrary | null> {
+  try {
+    const content = await fs.readFile(DATA_FILE, "utf8");
+    const parsed: unknown = JSON.parse(content);
+    return normalizeLibrary(parsed);
+  } catch {
+    return null;
+  }
+}
+
+async function readBlobText(pathname: string): Promise<string | null> {
+  const result = await get(pathname, {
+    access: "public",
+    useCache: false,
+  });
+
+  if (!result || result.statusCode !== 200 || !result.stream) {
+    return null;
+  }
+
+  return new Response(result.stream).text();
+}
+
+async function readBlobPhotoLibrary(): Promise<PhotoLibrary | null> {
+  const content = await readBlobText(BLOB_LIBRARY_PATH);
+  if (!content) return null;
+
+  const parsed: unknown = JSON.parse(content);
+  return normalizeLibrary(parsed);
+}
+
+async function writeBlobPhotoLibrary(library: PhotoLibrary): Promise<void> {
+  const normalized = normalizeLibrary(library);
+  const serialized = JSON.stringify(normalized, null, 2);
+
+  await put(BLOB_LIBRARY_PATH, serialized, {
+    access: "public",
+    allowOverwrite: true,
+    contentType: "application/json; charset=utf-8",
+    cacheControlMaxAge: BLOB_JSON_CACHE_SECONDS,
+  });
+}
+
+async function seedBlobPhotoLibrary(): Promise<PhotoLibrary> {
+  const library = (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
+  await writeBlobPhotoLibrary(library);
+  return library;
+}
+
 export async function ensurePhotoLibraryFile(): Promise<void> {
+  if (hasBlobStorage()) {
+    const library = await readBlobPhotoLibrary();
+    if (!library) {
+      await seedBlobPhotoLibrary();
+    }
+
+    return;
+  }
+
   await fs.mkdir(DATA_DIR, { recursive: true });
 
   try {
@@ -306,19 +374,23 @@ export async function ensurePhotoLibraryFile(): Promise<void> {
 }
 
 export async function readPhotoLibrary(): Promise<PhotoLibrary> {
-  await ensurePhotoLibraryFile();
-
-  try {
-    const content = await fs.readFile(DATA_FILE, "utf8");
-    const parsed: unknown = JSON.parse(content);
-    return normalizeLibrary(parsed);
-  } catch {
-    return deepCloneDefaults();
+  if (hasBlobStorage()) {
+    const library = await readBlobPhotoLibrary();
+    return library ?? seedBlobPhotoLibrary();
   }
+
+  await ensurePhotoLibraryFile();
+  return (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
 }
 
 export async function writePhotoLibrary(library: PhotoLibrary): Promise<void> {
   const normalized = normalizeLibrary(library);
+
+  if (hasBlobStorage()) {
+    await writeBlobPhotoLibrary(normalized);
+    return;
+  }
+
   const serialized = JSON.stringify(normalized, null, 2);
   await fs.writeFile(DATA_FILE, serialized, "utf8");
 }
@@ -353,7 +425,65 @@ export function resolvePublicPathFromSrc(src: string): string | null {
   return absolutePath;
 }
 
+function resolveBlobUploadPathname(src: string): string | null {
+  if (src.startsWith(`${BLOB_UPLOAD_PREFIX}/`)) {
+    return src;
+  }
+
+  try {
+    const url = new URL(src);
+    if (!url.hostname.endsWith(".blob.vercel-storage.com")) return null;
+
+    const pathname = url.pathname.replace(/^\/+/, "");
+    return pathname.startsWith(`${BLOB_UPLOAD_PREFIX}/`) ? pathname : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writeManagedPhotoFile(
+  sectionKey: PhotoSectionKey,
+  fileName: string,
+  fileBuffer: Buffer,
+  contentType: string,
+): Promise<string> {
+  if (hasBlobStorage()) {
+    const pathname = `${BLOB_UPLOAD_PREFIX}/${sectionKey}/${fileName}`;
+    const blob = await put(pathname, fileBuffer, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: false,
+      contentType,
+      cacheControlMaxAge: BLOB_IMAGE_CACHE_SECONDS,
+    });
+
+    return blob.url;
+  }
+
+  const relativeDirectory = path.join("images", "dueto", "uploads", sectionKey);
+  const absoluteDirectory = path.join(PUBLIC_DIR, relativeDirectory);
+  const absoluteFilePath = path.join(absoluteDirectory, fileName);
+
+  await fs.mkdir(absoluteDirectory, { recursive: true });
+  await fs.writeFile(absoluteFilePath, fileBuffer);
+
+  return `/${relativeDirectory.replace(/\\/g, "/")}/${fileName}`;
+}
+
 export async function removeManagedFileIfExists(src: string): Promise<void> {
+  const blobPathname = resolveBlobUploadPathname(src);
+  if (blobPathname && hasBlobStorage()) {
+    try {
+      await del(src);
+    } catch (error) {
+      console.error("Falha ao remover foto do Vercel Blob.", error);
+    }
+
+    return;
+  }
+
+  if (hasBlobStorage()) return;
+
   if (!src.startsWith("/images/dueto/uploads/")) return;
 
   const filePath = resolvePublicPathFromSrc(src);

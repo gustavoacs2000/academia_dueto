@@ -55,4 +55,5 @@ Foi adicionado um painel interno em `/admin/fotos` para gerenciar imagens por se
 Observação:
 - Upload e exclusão funcionam em `public/images/dueto/uploads/...`.
 - Seções de foto única substituem a foto anterior automaticamente.
-- Esse fluxo depende de escrita em disco local (servidor com filesystem persistente).
+- Em desenvolvimento local, sem `BLOB_READ_WRITE_TOKEN`, o painel usa `data/photo-library.json` e `public/images/dueto/uploads/...`.
+- Em producao na Vercel, configure Vercel Blob e a variavel `BLOB_READ_WRITE_TOKEN`; nesse modo, fotos e `dueto/photo-library.json` sao salvos no Blob.
