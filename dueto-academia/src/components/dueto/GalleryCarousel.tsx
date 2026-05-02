@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import { buildResponsivePhotoStyle } from "@/lib/photoStyles";
 
 type GalleryItem = {
   src: string;
@@ -10,6 +11,9 @@ type GalleryItem = {
   focalX?: number;
   focalY?: number;
   zoom?: number;
+  mobileFocalX?: number;
+  mobileFocalY?: number;
+  mobileZoom?: number;
 };
 
 type GalleryCarouselProps = {
@@ -36,10 +40,6 @@ export default function GalleryCarousel({ images, intervalMs = 5000 }: GalleryCa
   const goPrev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   const goNext = () => setCurrentIndex((prev) => (prev + 1) % images.length);
   const currentImage = images[currentIndex];
-  const focalX = currentImage.focalX ?? 50;
-  const focalY = currentImage.focalY ?? 50;
-  const zoom = currentImage.zoom ?? 100;
-  const objectPosition = `${focalX}% ${focalY}%`;
 
   return (
     <div className="w-full">
@@ -53,12 +53,8 @@ export default function GalleryCarousel({ images, intervalMs = 5000 }: GalleryCa
           alt={currentImage.alt}
           fill
           sizes="(max-width: 1024px) 100vw, 75vw"
-          className="object-cover"
-          style={{
-            objectPosition,
-            transform: `scale(${zoom / 100})`,
-            transformOrigin: `${focalX}% ${focalY}%`,
-          }}
+          className="object-cover dueto-responsive-photo"
+          style={buildResponsivePhotoStyle(currentImage)}
           priority={currentIndex === 0}
         />
 

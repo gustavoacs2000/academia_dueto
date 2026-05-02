@@ -44,8 +44,10 @@ export default function DuetoNavbar() {
         return () => { document.body.style.overflow = ""; };
     }, [mobileOpen]);
 
-    // fecha menu ao trocar de rota
-    useEffect(() => { setMobileOpen(false); setCoursesOpen(false); }, [pathname]);
+    const closeMobileMenu = () => {
+        setMobileOpen(false);
+        setCoursesOpen(false);
+    };
 
     const isActive = (href: string) =>
         href === "/" ? pathname === href : pathname.startsWith(href);
@@ -68,7 +70,7 @@ export default function DuetoNavbar() {
                 <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
 
                     {/* ── Logo ── */}
-                    <Link href="/" className="flex items-center gap-2.5 group" aria-label="Dueto Academia — página inicial">
+                    <Link href="/" className="flex items-center gap-2.5 group" aria-label="Dueto Academia — página inicial" onClick={closeMobileMenu}>
                         <div className="relative w-[74px] h-[50px]">
                             <Image
                                 src="/images/dueto/brand-logo-blue.png"
@@ -190,6 +192,7 @@ export default function DuetoNavbar() {
                                 >
                                     <Link
                                         href={link.href}
+                                        onClick={closeMobileMenu}
                                         className={`flex items-center justify-between py-4 border-b border-[#1A2E4A]/8 text-lg font-normal transition-colors ${isActive(link.href) ? "text-[#1A2E4A]" : "text-[#0F1820]/65 hover:text-[#1A2E4A]"
                                             }`}
                                         style={{ fontFamily: "'Cormorant Garamond', serif" }}
@@ -206,6 +209,7 @@ export default function DuetoNavbar() {
                                                 <Link
                                                     key={sub.href}
                                                     href={sub.href}
+                                                    onClick={closeMobileMenu}
                                                     className="flex items-center gap-2 py-3 text-sm text-[#0F1820]/50 hover:text-[#1A2E4A] transition-colors"
                                                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                                                 >
@@ -226,6 +230,7 @@ export default function DuetoNavbar() {
                             >
                                 <Link
                                     href="/contato"
+                                    onClick={closeMobileMenu}
                                     className="inline-flex items-center justify-center w-full py-4 rounded-2xl bg-[#1A2E4A] text-white font-medium text-base"
                                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                                 >

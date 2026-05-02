@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GraduationCap, Award, Music, ArrowRight } from "lucide-react";
 import { InstagramIcon, YoutubeIcon } from "@/components/dueto/SocialBrandIcons";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
+import { buildResponsivePhotoStyle } from "@/lib/photoStyles";
 
 export const metadata: Metadata = {
   title: "Professores",
@@ -20,18 +21,6 @@ const TEACHER_PHOTO_SECTIONS = {
   hellen: "professores_hellen",
   alfredo: "professores_alfredo",
 } as const;
-
-function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
-  const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
-  const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
-  const zoom = typeof photo.zoom === "number" ? Math.max(50, Math.min(200, photo.zoom)) : 100;
-
-  return {
-    objectPosition: `${focalX}% ${focalY}%`,
-    transform: `scale(${zoom / 100})`,
-    transformOrigin: `${focalX}% ${focalY}%`,
-  } as const;
-}
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -210,8 +199,8 @@ export default async function ProfessoresPage() {
                     alt={teacherPhoto.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover"
-                    style={objectStyleFromPhoto(teacherPhoto)}
+                    className="object-cover dueto-responsive-photo"
+                    style={buildResponsivePhotoStyle(teacherPhoto)}
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
                   />
@@ -304,7 +293,7 @@ export default async function ProfessoresPage() {
 
       {/* Quote */}
       <div className="bg-[#0A1220] py-16 px-6 text-center">
-        <span className="text-5xl text-[#D4A843]/20 font-normal" style={{ fontFamily: "'Cormorant Garamond', serif" }}>"</span>
+        <span className="text-5xl text-[#D4A843]/20 font-normal" style={{ fontFamily: "'Cormorant Garamond', serif" }}>&ldquo;</span>
         <p className="text-white/45 text-base italic max-w-lg mx-auto mt-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           Ensinar música é abrir uma porta para uma linguagem que existe há séculos e nunca envelhece.
         </p>

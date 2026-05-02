@@ -134,8 +134,12 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-cursos-piano",
-        src: "/images/dueto/teacher-alfredo.png",
-        alt: "Professor de piano da Dueto Academia",
+        src: "/images/dueto/dueto_piano.jpeg",
+        alt: "Pianista se apresentando na inauguracao da Dueto Academia",
+        focalX: 50,
+        focalY: 48,
+        mobileFocalX: 50,
+        mobileFocalY: 48,
       },
     ],
   },
@@ -248,6 +252,9 @@ function normalizeItem(item: unknown): PhotoItem | null {
   const focalX = normalizePercentage(candidate.focalX);
   const focalY = normalizePercentage(candidate.focalY);
   const zoom = normalizeZoom(candidate.zoom);
+  const mobileFocalX = normalizePercentage(candidate.mobileFocalX);
+  const mobileFocalY = normalizePercentage(candidate.mobileFocalY);
+  const mobileZoom = normalizeZoom(candidate.mobileZoom);
   if (!src) return null;
 
   return {
@@ -257,6 +264,9 @@ function normalizeItem(item: unknown): PhotoItem | null {
     ...(focalX !== null ? { focalX } : {}),
     ...(focalY !== null ? { focalY } : {}),
     ...(zoom !== null ? { zoom } : {}),
+    ...(mobileFocalX !== null ? { mobileFocalX } : {}),
+    ...(mobileFocalY !== null ? { mobileFocalY } : {}),
+    ...(mobileZoom !== null ? { mobileZoom } : {}),
   };
 }
 
@@ -331,6 +341,9 @@ export function createPhotoItem(src: string, alt: string): PhotoItem {
     focalX: DEFAULT_FOCAL_POSITION,
     focalY: DEFAULT_FOCAL_POSITION,
     zoom: DEFAULT_ZOOM,
+    mobileFocalX: DEFAULT_FOCAL_POSITION,
+    mobileFocalY: DEFAULT_FOCAL_POSITION,
+    mobileZoom: DEFAULT_ZOOM,
   };
 }
 

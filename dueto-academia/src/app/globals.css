@@ -8,3 +8,17 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+.dueto-responsive-photo {
+  object-position: var(--dueto-photo-focal-x, 50%) var(--dueto-photo-focal-y, 50%);
+  transform: scale(var(--dueto-photo-zoom, 1));
+  transform-origin: var(--dueto-photo-focal-x, 50%) var(--dueto-photo-focal-y, 50%);
+}
+
+@media (max-width: 767px) {
+  .dueto-responsive-photo {
+    object-position: var(--dueto-photo-mobile-focal-x, var(--dueto-photo-focal-x, 50%)) var(--dueto-photo-mobile-focal-y, var(--dueto-photo-focal-y, 50%));
+    transform: scale(var(--dueto-photo-mobile-zoom, var(--dueto-photo-zoom, 1)));
+    transform-origin: var(--dueto-photo-mobile-focal-x, var(--dueto-photo-focal-x, 50%)) var(--dueto-photo-mobile-focal-y, var(--dueto-photo-focal-y, 50%));
+  }
+}

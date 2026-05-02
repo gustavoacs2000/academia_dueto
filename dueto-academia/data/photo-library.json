@@ -6,10 +6,14 @@
     "items": [
       {
         "id": "93de27c1-3e2c-45d6-a13b-c0255ecbb7e3",
-        "src": "/images/dueto/uploads/home_hero/1776533458799-a65si0-hero-home.jpg",
-        "alt": "hero home",
-        "focalX": 0,
-        "focalY": 0
+        "src": "/images/dueto/uploads/home_hero/1777697436011-pzm7sn-home.png",
+        "alt": "Aluna tocando violino na Dueto Academia",
+        "focalX": 50,
+        "focalY": 50,
+        "zoom": 100,
+        "mobileFocalX": 50,
+        "mobileFocalY": 50,
+        "mobileZoom": 100
       }
     ]
   },
@@ -137,6 +141,144 @@
         "alt": "Entrada da Dueto Academia de Música em Brasília",
         "focalX": 50,
         "focalY": 5
+      }
+    ]
+  },
+  "cursos_violino": {
+    "key": "cursos_violino",
+    "label": "Cursos - Violino",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-cursos-violino",
+        "src": "/images/dueto/gallery-recital-181.jpg",
+        "alt": "Aluna em solo de violino no palco"
+      }
+    ]
+  },
+  "cursos_viola": {
+    "key": "cursos_viola",
+    "label": "Cursos - Viola de Arco",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-cursos-viola",
+        "src": "/images/dueto/gallery-recital-200.jpg",
+        "alt": "Professor em apresentacao solo de viola"
+      }
+    ]
+  },
+  "cursos_violoncelo": {
+    "key": "cursos_violoncelo",
+    "label": "Cursos - Violoncelo",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-cursos-violoncelo",
+        "src": "/images/dueto/course-violoncelo.jpg",
+        "alt": "Aula de violoncelo na Dueto Academia"
+      }
+    ]
+  },
+  "cursos_violao": {
+    "key": "cursos_violao",
+    "label": "Cursos - Violao",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-cursos-violao",
+        "src": "/images/dueto/course-violao.jpg",
+        "alt": "Aula de violao na Dueto Academia"
+      }
+    ]
+  },
+  "cursos_piano": {
+    "key": "cursos_piano",
+    "label": "Cursos - Piano",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-cursos-piano",
+        "src": "/images/dueto/dueto_piano.jpeg",
+        "alt": "Pianista se apresentando na inauguração da Dueto Academia",
+        "focalX": 42,
+        "focalY": 23,
+        "zoom": 87,
+        "mobileFocalX": 42,
+        "mobileFocalY": 23,
+        "mobileZoom": 87
+      }
+    ]
+  },
+  "professores_guilherme": {
+    "key": "professores_guilherme",
+    "label": "Professores - Guilherme",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-guilherme",
+        "src": "/images/dueto/teacher-guilherme.jpeg",
+        "alt": "Guilherme Alexander, professor de violino"
+      }
+    ]
+  },
+  "professores_jordana": {
+    "key": "professores_jordana",
+    "label": "Professores - Jordana",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-jordana",
+        "src": "/images/dueto/teacher-jordana.jpeg",
+        "alt": "Jordana Rodrigues, professora de violino"
+      }
+    ]
+  },
+  "professores_gabriel": {
+    "key": "professores_gabriel",
+    "label": "Professores - Gabriel",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-gabriel",
+        "src": "/images/dueto/teacher-gabriel.jpeg",
+        "alt": "Gabriel Mendes, professor de violino"
+      }
+    ]
+  },
+  "professores_lucas": {
+    "key": "professores_lucas",
+    "label": "Professores - Lucas",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-lucas",
+        "src": "/images/dueto/teacher-lucas.jpeg",
+        "alt": "Lucas Rezende, professor de violao"
+      }
+    ]
+  },
+  "professores_hellen": {
+    "key": "professores_hellen",
+    "label": "Professores - Hellen",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-hellen",
+        "src": "/images/dueto/teacher-hellen.jpeg",
+        "alt": "Hellen Alvares, professora de violoncelo"
+      }
+    ]
+  },
+  "professores_alfredo": {
+    "key": "professores_alfredo",
+    "label": "Professores - Alfredo",
+    "multiple": false,
+    "items": [
+      {
+        "id": "default-prof-alfredo",
+        "src": "/images/dueto/teacher-alfredo.png",
+        "alt": "Alfredo Siqueira, professor de piano"
       }
     ]
   }

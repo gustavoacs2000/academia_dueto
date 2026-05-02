@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, Users, Music } from "lucide-react";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
+import { buildResponsivePhotoStyle } from "@/lib/photoStyles";
 
 export const metadata: Metadata = {
   title: "Cursos",
@@ -36,22 +37,23 @@ const COURSE_PHOTO_SECTIONS = {
   },
   piano: {
     section: "cursos_piano",
-    src: "/images/dueto/teacher-alfredo.png",
-    alt: "Professor de piano da Dueto Academia",
+    src: "/images/dueto/dueto_piano.jpeg",
+    alt: "Pianista se apresentando na inauguração da Dueto Academia",
+    focalX: 50,
+    focalY: 48,
   },
 } as const;
 
-function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
-  const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
-  const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
-  const zoom = typeof photo.zoom === "number" ? Math.max(50, Math.min(200, photo.zoom)) : 100;
+const INCLUDED_WITH_WORKBOOK = [
+  "Apostila exclusiva",
+  "Metodologia adaptada para cada aluno(a)",
+  "Acervo de partituras e áudios autorais",
+  "Repertório personalizado",
+  "Desenvolvimento da técnica do instrumento e percepção musical",
+  "Leitura de partitura",
+];
 
-  return {
-    objectPosition: `${focalX}% ${focalY}%`,
-    transform: `scale(${zoom / 100})`,
-    transformOrigin: `${focalX}% ${focalY}%`,
-  } as const;
-}
+const INCLUDED_DEFAULT = INCLUDED_WITH_WORKBOOK.slice(1);
 
 const COURSES = [
   {
@@ -66,14 +68,7 @@ const COURSES = [
     frequency: "Planos semanais",
     description:
       "Aulas para iniciantes e avancados com foco em tecnica, repertorio e expressao musical.",
-    content: [
-      "Postura e tecnica de arco",
-      "Escalas, arpejos e estudos progressivos",
-      "Leitura musical aplicada ao instrumento",
-      "Repertorio classico e popular",
-      "Preparacao para recitais e apresentacoes",
-      "Aulas individuais e coletivas",
-    ],
+    content: INCLUDED_WITH_WORKBOOK,
     levels: [
       { name: "Iniciante", desc: "Primeiro contato com o instrumento" },
       { name: "Basico", desc: "Com fundamentos de leitura e arco" },
@@ -97,14 +92,7 @@ const COURSES = [
     frequency: "Planos semanais",
     description:
       "Formacao para quem deseja desenvolver leitura, sonoridade e repertorio na viola de arco.",
-    content: [
-      "Transicao do violino ou inicio direto na viola",
-      "Tecnica de arco e sonoridade da viola",
-      "Leitura em clave de do",
-      "Repertorio cameristico e solo",
-      "Acompanhamento tecnico por nivel",
-      "Aulas individuais e coletivas",
-    ],
+    content: INCLUDED_WITH_WORKBOOK,
     levels: [
       { name: "Iniciante", desc: "Primeiro contato com a viola de arco" },
       { name: "Intermediario", desc: "Com base tecnica inicial" },
@@ -127,14 +115,7 @@ const COURSES = [
     frequency: "Planos semanais",
     description:
       "Aulas de violoncelo com foco em postura, sonoridade e repertorio para diferentes niveis.",
-    content: [
-      "Postura e ergonomia no instrumento",
-      "Tecnica de arco do violoncelo",
-      "Posicoes e mudancas de posicao",
-      "Estudo de sonoridade e afinacao",
-      "Repertorio classico e de conjunto",
-      "Aulas individuais e coletivas",
-    ],
+    content: INCLUDED_DEFAULT,
     levels: [
       { name: "Iniciante", desc: "A partir do primeiro contato" },
       { name: "Intermediario", desc: "Com repertorio em desenvolvimento" },
@@ -157,14 +138,7 @@ const COURSES = [
     frequency: "Planos semanais",
     description:
       "Aulas personalizadas de violao para tocar com seguranca e musicalidade em pouco tempo.",
-    content: [
-      "Postura e posicao correta das maos",
-      "Acordes, dedilhado e ritmo",
-      "Leitura de cifras e partituras",
-      "Repertorio conforme objetivo do aluno",
-      "Violao classico e popular",
-      "Aulas individuais e coletivas",
-    ],
+    content: INCLUDED_DEFAULT,
     levels: [
       { name: "Iniciante", desc: "Sem experiencia previa" },
       { name: "Basico", desc: "Com acordes e ritmos iniciais" },
@@ -188,14 +162,7 @@ const COURSES = [
     frequency: "Planos semanais",
     description:
       "Aulas de piano com base tecnica, leitura musical e repertorio para diversos objetivos.",
-    content: [
-      "Postura e tecnica das maos",
-      "Leitura em clave de sol e fa",
-      "Escalas, arpejos e estudos",
-      "Repertorio classico e popular",
-      "Harmonia e acompanhamento",
-      "Aulas individuais e coletivas",
-    ],
+    content: INCLUDED_DEFAULT,
     levels: [
       { name: "Infantil", desc: "Metodo ludico para criancas" },
       { name: "Iniciante", desc: "Primeiros fundamentos no piano" },
@@ -331,8 +298,8 @@ export default async function CursosPage() {
                     alt={coursePhoto.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="object-cover"
-                    style={objectStyleFromPhoto(coursePhoto)}
+                    className="object-cover dueto-responsive-photo"
+                    style={buildResponsivePhotoStyle(coursePhoto)}
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
                   />
@@ -344,7 +311,7 @@ export default async function CursosPage() {
 
                 {/* Content */}
                 <div className="rounded-2xl border border-[#1A2E4A]/8 bg-white p-6">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>O que você vai aprender</p>
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>O que está incluso nas aulas</p>
                   <div className="flex flex-col gap-2.5">
                     {course.content.map((item) => (
                       <div key={item} className="flex items-start gap-2.5">
@@ -393,10 +360,10 @@ export default async function CursosPage() {
           Não sabe qual instrumento escolher?
         </h2>
         <p className="text-white/42 text-sm max-w-md mx-auto mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Agende uma aula experimental gratuita e nossos professores vão te ajudar a encontrar o instrumento certo para o seu perfil.
+          Agende uma aula experimental por R$ 20 e descubra, na prática, qual instrumento tem mais a ver com você. O valor vira desconto na matrícula se você decidir continuar.
         </p>
         <Link href="/contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#D4A843] text-[#0A1220] text-sm font-medium hover:bg-[#e6bc5a] transition-all" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Agendar aula experimental gratuita
+          Agendar aula experimental
           <ArrowRight size={14} />
         </Link>
       </div>

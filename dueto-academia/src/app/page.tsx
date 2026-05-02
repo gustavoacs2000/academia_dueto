@@ -4,12 +4,13 @@ import Link from "next/link";
 import { ArrowRight, Star, MapPin } from "lucide-react";
 import GalleryCarousel from "@/components/dueto/GalleryCarousel";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
+import { buildResponsivePhotoStyle } from "@/lib/photoStyles";
 
 const MAPS_PLACE_URL =
-  "https://www.google.com/maps/place/Dueto+Academia+de+M%C3%BAsica/@-15.8358993,-47.9813545,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3367f5e8d41f:0x1f1a1f4d09e38497!8m2!3d-15.8359045!4d-47.9787796!16s%2Fg%2F11ptmc9m53?hl=pt-BR&entry=ttu&g_ep=EgoyMDI2MDQwOC4wIKXMDSoASAFQAw%3D%3D";
+  "https://www.google.com/maps/search/?api=1&query=QI%2025%2C%20bl.%20A%20-%20Ed.%20Real%20Mix%2C%20sala%20Cobertura%205%20-%20Guar%C3%A1%202%2C%20Bras%C3%ADlia%20-%20DF";
 const MAPS_REVIEWS_URL = "https://share.google/sxQ1tfg1loNyqrYFp";
 const MAPS_EMBED_URL =
-  "https://www.google.com/maps?hl=pt-BR&q=-15.8359045,-47.9787796&z=17&output=embed";
+  "https://www.google.com/maps?hl=pt-BR&q=QI%2025%2C%20bl.%20A%20-%20Ed.%20Real%20Mix%2C%20sala%20Cobertura%205%20-%20Guar%C3%A1%202%2C%20Bras%C3%ADlia%20-%20DF&z=17&output=embed";
 const HERO_FALLBACK = {
   src: "/images/dueto/hero-home.jpg",
   alt: "Aluna tocando violino na Dueto Academia de Música",
@@ -99,18 +100,6 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
-  const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
-  const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
-  const zoom = typeof photo.zoom === "number" ? Math.max(50, Math.min(200, photo.zoom)) : 100;
-
-  return {
-    objectPosition: `${focalX}% ${focalY}%`,
-    transform: `scale(${zoom / 100})`,
-    transformOrigin: `${focalX}% ${focalY}%`,
-  } as const;
-}
-
 // --- Page ---------------------------------------------------------------------
 
 export default async function DuetoHomePage() {
@@ -126,6 +115,9 @@ export default async function DuetoHomePage() {
     focalX: "focalX" in item ? item.focalX : undefined,
     focalY: "focalY" in item ? item.focalY : undefined,
     zoom: "zoom" in item ? item.zoom : undefined,
+    mobileFocalX: "mobileFocalX" in item ? item.mobileFocalX : undefined,
+    mobileFocalY: "mobileFocalY" in item ? item.mobileFocalY : undefined,
+    mobileZoom: "mobileZoom" in item ? item.mobileZoom : undefined,
   }));
 
   return (
@@ -142,8 +134,8 @@ export default async function DuetoHomePage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
-            style={objectStyleFromPhoto(heroPhoto)}
+            className="object-cover dueto-responsive-photo"
+            style={buildResponsivePhotoStyle(heroPhoto)}
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
           />
@@ -251,8 +243,8 @@ export default async function DuetoHomePage() {
                 alt={filosofiaPhoto.alt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-                style={objectStyleFromPhoto(filosofiaPhoto)}
+                className="object-cover dueto-responsive-photo"
+                style={buildResponsivePhotoStyle(filosofiaPhoto)}
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAHhAAAQQCAwAAAAAAAAAAAAAAAQIDBAUREiEx/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AqzWtnas6fXpaSYeM3LiuZiCeqiKD/9k="
               />
@@ -320,7 +312,7 @@ export default async function DuetoHomePage() {
 
                 {/* Text */}
                 <p className="text-sm leading-relaxed text-stone-500 my-4 flex-1 italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  "{review.text}"
+                  &ldquo;{review.text}&rdquo;
                 </p>
 
                 {/* Divider */}
@@ -381,8 +373,8 @@ export default async function DuetoHomePage() {
 
               <div className="flex flex-col gap-4 mb-8">
                 {[
-                  { icon: "📍", label: "Endereço",  value: "Edifício Real Mix, Guará II Bl. A COBERTURA 5, Brasília - DF, 71060-250" },
-                  { icon: "🕐", label: "Horários",  value: "Segunda a Sexta: 8h-21h · Sábado: 8h-14h" },
+                  { icon: "📍", label: "Endereço",  value: "QI 25, bl. A - Ed. Real Mix, sala Cobertura 5 - Guará 2" },
+                  { icon: "🕐", label: "Horários",  value: "Segunda a sexta: 09h às 20h · Sábado: 08h às 15h" },
                   { icon: "📞", label: "Telefone",  value: "(61) 99502-9627" },
                 ].map(({ icon, label, value }) => (
                   <div key={label} className="flex gap-3">
@@ -432,11 +424,11 @@ export default async function DuetoHomePage() {
           <span className="w-5 h-px bg-[#D4A843]/50" />
         </p>
         <h2 className="font-normal text-[#0F1820] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: 400 }}>
-          Sua primeira aula é{" "}
-          <em className="italic text-[#1A2E4A]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>gratuita.</em>
+          Que tal vir conhecer a nossa{" "}
+          <em className="italic text-[#1A2E4A]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>escola?</em>
         </h2>
         <p className="text-sm text-stone-500 max-w-md mx-auto mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Venha conhecer a Dueto sem compromisso. Agende uma aula experimental e descubra o instrumento que mais combina com você.
+          Agende uma aula experimental por R$ 20 e descubra, na prática, qual instrumento tem mais a ver com você. O valor vira desconto na matrícula se você decidir continuar.
         </p>
         <Link href="/contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#1A2E4A] text-white text-sm font-medium hover:bg-[#243d5e] transition-all duration-200" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           Agendar aula experimental

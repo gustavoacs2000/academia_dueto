@@ -107,6 +107,7 @@ export async function POST(request: Request) {
   const sectionInput = formData.get("section");
   const fileInput = formData.get("file");
   const altInput = formData.get("alt");
+  const replaceIdInput = formData.get("replaceId");
 
   if (typeof sectionInput !== "string") {
     return NextResponse.json({ error: "Secao invalida." }, { status: 400 });
@@ -125,6 +126,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Envie um arquivo de imagem valido." }, { status: 400 });
   }
 
+  const library = await readPhotoLibrary();
+  const section = library[sectionKey];
+  const replaceId =
+    typeof replaceIdInput === "string" && replaceIdInput.trim() ? replaceIdInput.trim() : null;
+  const replaceIndex = replaceId ? section.items.findIndex((item) => item.id === replaceId) : -1;
+
+  if (replaceId && replaceIndex < 0) {
+    return NextResponse.json({ error: "Foto a substituir nao encontrada." }, { status: 404 });
+  }
+
   const extension = inferExtension(fileInput);
   const safeName = sanitizeFilename(fileInput.name || "foto");
   const base = path.basename(safeName, path.extname(safeName)) || "foto";
@@ -138,12 +149,16 @@ export async function POST(request: Request) {
   const fileBuffer = Buffer.from(await fileInput.arrayBuffer());
   await fs.writeFile(absoluteFilePath, fileBuffer);
 
-  const library = await readPhotoLibrary();
-  const section = library[sectionKey];
   const alt = typeof altInput === "string" && altInput.trim() ? altInput.trim() : inferAltFromName(fileInput.name);
   const newItem = createPhotoItem(publicSrc, alt);
+  let savedItem = newItem;
 
-  if (section.multiple) {
+  if (replaceId && replaceIndex >= 0) {
+    const previous = section.items[replaceIndex];
+    savedItem = { ...newItem, id: previous.id };
+    section.items[replaceIndex] = savedItem;
+    await removeManagedFileIfExists(previous.src);
+  } else if (section.multiple) {
     section.items.push(newItem);
   } else {
     const previous = section.items[0];
@@ -157,7 +172,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     section: library[sectionKey],
-    item: newItem,
+    item: savedItem,
   });
 }
 
@@ -176,6 +191,9 @@ export async function PATCH(request: Request) {
     focalX?: number;
     focalY?: number;
     zoom?: number;
+    mobileFocalX?: number;
+    mobileFocalY?: number;
+    mobileZoom?: number;
   };
 
   if (!payload.section) {
@@ -191,13 +209,6 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "ID da foto nao informado." }, { status: 400 });
   }
 
-  const focalX = toPercentage(payload.focalX);
-  const focalY = toPercentage(payload.focalY);
-  const zoom = toZoom(payload.zoom);
-  if (focalX === null || focalY === null || zoom === null) {
-    return NextResponse.json({ error: "Valores de enquadramento invalidos." }, { status: 400 });
-  }
-
   const library = await readPhotoLibrary();
   const section = library[sectionKey];
   const item = section.items.find((entry) => entry.id === payload.id);
@@ -206,9 +217,41 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Foto nao encontrada." }, { status: 404 });
   }
 
+  const currentFocalX = typeof item.focalX === "number" ? item.focalX : 50;
+  const currentFocalY = typeof item.focalY === "number" ? item.focalY : 50;
+  const currentZoom = typeof item.zoom === "number" ? item.zoom : 100;
+  const focalX = payload.focalX === undefined ? currentFocalX : toPercentage(payload.focalX);
+  const focalY = payload.focalY === undefined ? currentFocalY : toPercentage(payload.focalY);
+  const zoom = payload.zoom === undefined ? currentZoom : toZoom(payload.zoom);
+  const mobileFocalX =
+    payload.mobileFocalX === undefined
+      ? typeof item.mobileFocalX === "number" ? item.mobileFocalX : focalX
+      : toPercentage(payload.mobileFocalX);
+  const mobileFocalY =
+    payload.mobileFocalY === undefined
+      ? typeof item.mobileFocalY === "number" ? item.mobileFocalY : focalY
+      : toPercentage(payload.mobileFocalY);
+  const mobileZoom =
+    payload.mobileZoom === undefined
+      ? typeof item.mobileZoom === "number" ? item.mobileZoom : zoom
+      : toZoom(payload.mobileZoom);
+  if (
+    focalX === null ||
+    focalY === null ||
+    zoom === null ||
+    mobileFocalX === null ||
+    mobileFocalY === null ||
+    mobileZoom === null
+  ) {
+    return NextResponse.json({ error: "Valores de enquadramento invalidos." }, { status: 400 });
+  }
+
   item.focalX = focalX;
   item.focalY = focalY;
   item.zoom = zoom;
+  item.mobileFocalX = mobileFocalX;
+  item.mobileFocalY = mobileFocalY;
+  item.mobileZoom = mobileZoom;
   await writePhotoLibrary(library);
 
   return NextResponse.json({ section: library[sectionKey], item });

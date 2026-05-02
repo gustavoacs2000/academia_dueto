@@ -11,13 +11,23 @@ import {
 } from "@/lib/photoTypes";
 
 type UploadState = Record<PhotoSectionKey, { file: File | null; alt: string; busy: boolean }>;
-type PositionDraft = { focalX: number; focalY: number; zoom: number; busy: boolean };
+type PositionDraft = {
+  focalX: number;
+  focalY: number;
+  zoom: number;
+  mobileFocalX: number;
+  mobileFocalY: number;
+  mobileZoom: number;
+  busy: boolean;
+};
 type PositionState = Record<string, PositionDraft>;
 type PreviewSpec = {
   aspectClass: string;
+  mobileAspectClass?: string;
   imageSizes: string;
   cardSpanClass?: string;
   hint: string;
+  mobileHint?: string;
 };
 
 const DEFAULT_FOCAL = 50;
@@ -28,9 +38,11 @@ const MAX_ZOOM = 200;
 const SECTION_PREVIEW_SPEC: Record<PhotoSectionKey, PreviewSpec> = {
   home_hero: {
     aspectClass: "aspect-[16/9]",
+    mobileAspectClass: "aspect-[9/16]",
     imageSizes: "(max-width: 1024px) 100vw, 520px",
     cardSpanClass: "sm:col-span-2",
     hint: "Miniatura do hero (aprox. tela cheia).",
+    mobileHint: "Previa mobile do hero (tela vertical).",
   },
   home_filosofia: {
     aspectClass: "aspect-[4/3]",
@@ -128,6 +140,14 @@ function clampZoom(value: number): number {
   return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Math.round(value)));
 }
 
+function buildImagePositionStyle(focalX: number, focalY: number, zoom: number) {
+  return {
+    objectPosition: `${focalX}% ${focalY}%`,
+    transform: `scale(${zoom / 100})`,
+    transformOrigin: `${focalX}% ${focalY}%`,
+  };
+}
+
 function emptyLibrary(): PhotoLibrary {
   const initial = {} as PhotoLibrary;
 
@@ -152,6 +172,9 @@ function buildPositionState(library: PhotoLibrary): PositionState {
         focalX: clampPercentage(item.focalX ?? DEFAULT_FOCAL),
         focalY: clampPercentage(item.focalY ?? DEFAULT_FOCAL),
         zoom: clampZoom(item.zoom ?? DEFAULT_ZOOM),
+        mobileFocalX: clampPercentage(item.mobileFocalX ?? item.focalX ?? DEFAULT_FOCAL),
+        mobileFocalY: clampPercentage(item.mobileFocalY ?? item.focalY ?? DEFAULT_FOCAL),
+        mobileZoom: clampZoom(item.mobileZoom ?? item.zoom ?? DEFAULT_ZOOM),
         busy: false,
       };
     }
@@ -218,6 +241,9 @@ export default function AdminFotosPage() {
         focalX: DEFAULT_FOCAL,
         focalY: DEFAULT_FOCAL,
         zoom: DEFAULT_ZOOM,
+        mobileFocalX: DEFAULT_FOCAL,
+        mobileFocalY: DEFAULT_FOCAL,
+        mobileZoom: DEFAULT_ZOOM,
         busy: false,
       };
 
@@ -232,15 +258,16 @@ export default function AdminFotosPage() {
   }, []);
 
   const uploadPhoto = useCallback(
-    async (sectionKey: PhotoSectionKey) => {
+    async (sectionKey: PhotoSectionKey, replaceId?: string, replacementFile?: File, replacementAlt?: string) => {
       const sectionUpload = uploadState[sectionKey];
-      if (!sectionUpload.file) {
+      const file = replacementFile ?? sectionUpload.file;
+      if (!file) {
         setError("Selecione uma imagem antes de enviar.");
         return;
       }
 
       if (!token.trim()) {
-        setError("Informe o token de administrador para enviar ou excluir fotos.");
+        setError("Informe o token de administrador para salvar o enquadramento.");
         return;
       }
 
@@ -251,8 +278,11 @@ export default function AdminFotosPage() {
       try {
         const formData = new FormData();
         formData.append("section", sectionKey);
-        formData.append("file", sectionUpload.file);
-        formData.append("alt", sectionUpload.alt);
+        formData.append("file", file);
+        formData.append("alt", replacementAlt ?? sectionUpload.alt);
+        if (replaceId) {
+          formData.append("replaceId", replaceId);
+        }
 
         const response = await fetch("/api/photo-library", {
           method: "POST",
@@ -269,7 +299,7 @@ export default function AdminFotosPage() {
 
         await loadLibrary();
         updateUploadState(sectionKey, { file: null, alt: "" });
-        setMessage("Foto enviada com sucesso.");
+        setMessage(replaceId ? "Foto substituida com sucesso." : "Foto enviada com sucesso.");
       } catch (uploadError) {
         const uploadMessage =
           uploadError instanceof Error ? uploadError.message : "Erro inesperado ao enviar foto.";
@@ -347,12 +377,23 @@ export default function AdminFotosPage() {
             focalX: draft.focalX,
             focalY: draft.focalY,
             zoom: draft.zoom,
+            mobileFocalX: draft.mobileFocalX,
+            mobileFocalY: draft.mobileFocalY,
+            mobileZoom: draft.mobileZoom,
           }),
         });
 
         const payload = (await response.json()) as {
           error?: string;
-          item?: { id: string; focalX?: number; focalY?: number; zoom?: number };
+          item?: {
+            id: string;
+            focalX?: number;
+            focalY?: number;
+            zoom?: number;
+            mobileFocalX?: number;
+            mobileFocalY?: number;
+            mobileZoom?: number;
+          };
           section?: PhotoLibrary[PhotoSectionKey];
         };
         if (!response.ok) {
@@ -371,6 +412,9 @@ export default function AdminFotosPage() {
             focalX: clampPercentage(payload.item.focalX ?? draft.focalX),
             focalY: clampPercentage(payload.item.focalY ?? draft.focalY),
             zoom: clampZoom(payload.item.zoom ?? draft.zoom),
+            mobileFocalX: clampPercentage(payload.item.mobileFocalX ?? draft.mobileFocalX),
+            mobileFocalY: clampPercentage(payload.item.mobileFocalY ?? draft.mobileFocalY),
+            mobileZoom: clampZoom(payload.item.mobileZoom ?? draft.mobileZoom),
           });
         }
 
@@ -546,7 +590,11 @@ export default function AdminFotosPage() {
                       className="self-start rounded-lg px-4 py-2 bg-[#1A2E4A] text-white text-sm font-medium hover:bg-[#243d5e] transition-colors disabled:opacity-60"
                       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
-                      {sectionUpload.busy ? "Enviando..." : "Adicionar foto"}
+                      {sectionUpload.busy
+                        ? "Enviando..."
+                        : section.multiple
+                          ? "Adicionar foto"
+                          : "Substituir foto atual"}
                     </button>
                   </div>
                 </div>
@@ -557,34 +605,63 @@ export default function AdminFotosPage() {
                       focalX: clampPercentage(item.focalX ?? DEFAULT_FOCAL),
                       focalY: clampPercentage(item.focalY ?? DEFAULT_FOCAL),
                       zoom: clampZoom(item.zoom ?? DEFAULT_ZOOM),
+                      mobileFocalX: clampPercentage(item.mobileFocalX ?? item.focalX ?? DEFAULT_FOCAL),
+                      mobileFocalY: clampPercentage(item.mobileFocalY ?? item.focalY ?? DEFAULT_FOCAL),
+                      mobileZoom: clampZoom(item.mobileZoom ?? item.zoom ?? DEFAULT_ZOOM),
                       busy: false,
                     };
+                    const mobileAspectClass = previewSpec.mobileAspectClass ?? previewSpec.aspectClass;
+                    const replaceInputId = `replace-${sectionKey}-${item.id}`;
 
                     return (
                       <article
                         key={item.id}
                         className={`rounded-xl border border-[#1A2E4A]/10 overflow-hidden ${previewSpec.cardSpanClass ?? ""}`}
                       >
-                        <div className={`relative ${previewSpec.aspectClass} bg-stone-100`}>
-                          <Image
-                            src={item.src}
-                            alt={item.alt || "Imagem da secao"}
-                            fill
-                            sizes={previewSpec.imageSizes}
-                            className="object-cover"
-                            style={{
-                              objectPosition: `${draft.focalX}% ${draft.focalY}%`,
-                              transform: `scale(${draft.zoom / 100})`,
-                              transformOrigin: `${draft.focalX}% ${draft.focalY}%`,
-                            }}
-                          />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-stone-50 p-3">
+                          <div>
+                            <p
+                              className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400 mb-2"
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              Desktop
+                            </p>
+                            <div className={`relative ${previewSpec.aspectClass} bg-stone-100 rounded-lg overflow-hidden`}>
+                              <Image
+                                src={item.src}
+                                alt={item.alt || "Imagem da secao"}
+                                fill
+                                sizes={previewSpec.imageSizes}
+                                className="object-cover"
+                                style={buildImagePositionStyle(draft.focalX, draft.focalY, draft.zoom)}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <p
+                              className="text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-400 mb-2"
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              Mobile
+                            </p>
+                            <div className={`relative ${mobileAspectClass} bg-stone-100 rounded-lg overflow-hidden`}>
+                              <Image
+                                src={item.src}
+                                alt={item.alt || "Imagem da secao"}
+                                fill
+                                sizes="220px"
+                                className="object-cover"
+                                style={buildImagePositionStyle(draft.mobileFocalX, draft.mobileFocalY, draft.mobileZoom)}
+                              />
+                            </div>
+                          </div>
                         </div>
                         <div className="p-3">
                           <p
                             className="text-[11px] text-stone-400 mb-2"
                             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                           >
-                            {previewSpec.hint}
+                            {previewSpec.hint} {previewSpec.mobileHint ?? "Previa mobile com ajuste independente."}
                           </p>
                           <p
                             className="text-xs text-stone-600 line-clamp-2 min-h-8"
@@ -595,6 +672,12 @@ export default function AdminFotosPage() {
                           </p>
 
                           <div className="mt-2 space-y-2">
+                            <p
+                              className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1A2E4A]/50"
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              Ajuste desktop
+                            </p>
                             <div>
                               <p
                                 className="text-[11px] text-stone-500 mb-1"
@@ -663,12 +746,134 @@ export default function AdminFotosPage() {
                                 className="w-full accent-[#1A2E4A]"
                               />
                             </div>
+
+                            <p
+                              className="pt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1A2E4A]/50"
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              Ajuste mobile
+                            </p>
+
+                            <div>
+                              <p
+                                className="text-[11px] text-stone-500 mb-1"
+                                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                              >
+                                Horizontal mobile: {draft.mobileFocalX}%
+                              </p>
+                              <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                step={1}
+                                value={draft.mobileFocalX}
+                                disabled={draft.busy}
+                                onChange={(event) =>
+                                  updatePositionState(item.id, {
+                                    mobileFocalX: clampPercentage(Number(event.target.value)),
+                                  })
+                                }
+                                className="w-full accent-[#D4A843]"
+                              />
+                            </div>
+
+                            <div>
+                              <p
+                                className="text-[11px] text-stone-500 mb-1"
+                                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                              >
+                                Vertical mobile: {draft.mobileFocalY}%
+                              </p>
+                              <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                step={1}
+                                value={draft.mobileFocalY}
+                                disabled={draft.busy}
+                                onChange={(event) =>
+                                  updatePositionState(item.id, {
+                                    mobileFocalY: clampPercentage(Number(event.target.value)),
+                                  })
+                                }
+                                className="w-full accent-[#D4A843]"
+                              />
+                            </div>
+
+                            <div>
+                              <p
+                                className="text-[11px] text-stone-500 mb-1"
+                                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                              >
+                                Zoom mobile: {draft.mobileZoom}%
+                              </p>
+                              <input
+                                type="range"
+                                min={MIN_ZOOM}
+                                max={MAX_ZOOM}
+                                step={1}
+                                value={draft.mobileZoom}
+                                disabled={draft.busy}
+                                onChange={(event) =>
+                                  updatePositionState(item.id, {
+                                    mobileZoom: clampZoom(Number(event.target.value)),
+                                  })
+                                }
+                                className="w-full accent-[#D4A843]"
+                              />
+                            </div>
                           </div>
 
                           <div className="mt-3 flex flex-wrap gap-2">
+                            <input
+                              id={replaceInputId}
+                              type="file"
+                              accept="image/png,image/jpeg,image/jpg,image/webp"
+                              className="sr-only"
+                              disabled={sectionUpload.busy}
+                              onChange={async (event) => {
+                                const file = event.target.files?.[0];
+                                if (!file) return;
+                                await uploadPhoto(sectionKey, item.id, file, item.alt);
+                                event.target.value = "";
+                              }}
+                            />
+                            <label
+                              htmlFor={replaceInputId}
+                              className={`rounded-md border border-[#1A2E4A]/20 px-2.5 py-1.5 text-[11px] text-[#1A2E4A] hover:bg-[#1A2E4A]/5 ${
+                                sectionUpload.busy ? "pointer-events-none opacity-60" : "cursor-pointer"
+                              }`}
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              {sectionUpload.busy ? "Enviando..." : "Substituir imagem"}
+                            </label>
                             <button
                               type="button"
-                              onClick={() => updatePositionState(item.id, { focalX: 50, focalY: 50, zoom: 100 })}
+                              onClick={() =>
+                                updatePositionState(item.id, {
+                                  mobileFocalX: draft.focalX,
+                                  mobileFocalY: draft.focalY,
+                                  mobileZoom: draft.zoom,
+                                })
+                              }
+                              disabled={draft.busy}
+                              className="rounded-md border border-[#D4A843]/35 px-2.5 py-1.5 text-[11px] text-[#1A2E4A] hover:bg-[#D4A843]/10 disabled:opacity-60"
+                              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                            >
+                              Copiar desktop para mobile
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                updatePositionState(item.id, {
+                                  focalX: 50,
+                                  focalY: 50,
+                                  zoom: 100,
+                                  mobileFocalX: 50,
+                                  mobileFocalY: 50,
+                                  mobileZoom: 100,
+                                })
+                              }
                               disabled={draft.busy}
                               className="rounded-md border border-[#1A2E4A]/20 px-2.5 py-1.5 text-[11px] text-[#1A2E4A] hover:bg-[#1A2E4A]/5 disabled:opacity-60"
                               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}

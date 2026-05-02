@@ -107,7 +107,7 @@ export default function DuetoFooter() {
         <div>
           <p className="text-[9px] font-semibold tracking-widest uppercase text-white/22 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Contato</p>
           <div className="flex flex-col gap-3 text-sm text-white/42" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            <p>📍 Brasília — DF</p>
+            <p>📍 QI 25, bl. A - Ed. Real Mix, sala Cobertura 5 - Guará 2</p>
             <a href="https://wa.me/5561995029627" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">WhatsApp</a>
             <a href="https://www.instagram.com/duetoacademiademusica/" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">Instagram</a>
             <a href="https://www.youtube.com/@duetoacademiademusica" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">YouTube</a>
