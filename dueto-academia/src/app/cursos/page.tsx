@@ -3,15 +3,39 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, Users, Music } from "lucide-react";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
+import { siteConfig } from "@/lib/siteMetadata";
 
 export const metadata: Metadata = {
-  title: "Cursos",
-  description: "Conheça os cursos de violino, viola de arco, violoncelo, violão e piano da Dueto Academia de Música em Brasília.",
+  title: "Cursos de Música em Brasília",
+  description:
+    "Conheça os cursos de violino, viola de arco, violoncelo, violão e piano da Dueto Academia de Música em Brasília.",
+  alternates: {
+    canonical: "/cursos",
+  },
+  openGraph: {
+    title: "Cursos de Música em Brasília | Dueto Academia",
+    description:
+      "Violino, viola de arco, violoncelo, violão e piano para crianças, jovens e adultos.",
+    url: "/cursos",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Cursos da Dueto Academia de Música em Brasília",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cursos de Música em Brasília | Dueto Academia",
+    description:
+      "Conheça os cursos de violino, viola, violoncelo, violão e piano.",
+    images: [siteConfig.ogImage],
+  },
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-
-export const dynamic = "force-dynamic";
 
 const COURSE_PHOTO_SECTIONS = {
   violino: {

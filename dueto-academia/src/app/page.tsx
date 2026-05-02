@@ -5,6 +5,7 @@ import { ArrowRight, Star, MapPin } from "lucide-react";
 import GalleryCarousel from "@/components/dueto/GalleryCarousel";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
 import { buildResponsivePhotoStyle } from "@/lib/photoStyles";
+import { siteConfig } from "@/lib/siteMetadata";
 
 const MAPS_PLACE_URL =
   "https://www.google.com/maps/search/?api=1&query=QI%2025%2C%20bl.%20A%20-%20Ed.%20Real%20Mix%2C%20sala%20Cobertura%205%20-%20Guar%C3%A1%202%2C%20Bras%C3%ADlia%20-%20DF";
@@ -21,12 +22,35 @@ const FILOSOFIA_FALLBACK = {
 };
 
 export const metadata: Metadata = {
-  title: "Home",
-  description:
-    "A Dueto é um espaço acolhedor para aprender música em Brasília. Aulas de violino, viola de arco, violoncelo, violão e piano a partir de 5 anos.",
+  title: siteConfig.homeTitle,
+  description: siteConfig.homeDescription,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: siteConfig.homeTitle,
+    description:
+      "Aulas de violino, viola de arco, violoncelo, violão e piano em Brasília.",
+    url: "/",
+    siteName: siteConfig.name,
+    locale: siteConfig.locale,
+    type: "website",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Dueto Academia de Música em Brasília",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.homeTitle,
+    description: "Escola de música em Brasília para crianças, jovens e adultos.",
+    images: [siteConfig.ogImage],
+  },
 };
-
-export const dynamic = "force-dynamic";
 
 // --- Data --------------------------------------------------------------------
 
@@ -119,9 +143,40 @@ export default async function DuetoHomePage() {
     mobileFocalY: "mobileFocalY" in item ? item.mobileFocalY : undefined,
     mobileZoom: "mobileZoom" in item ? item.mobileZoom : undefined,
   }));
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MusicSchool",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    telephone: siteConfig.phone,
+    image: `${siteConfig.url}${siteConfig.ogImage}`,
+    address: {
+      "@type": "PostalAddress",
+      ...siteConfig.address,
+    },
+    areaServed: "Brasília, DF",
+    sameAs: [
+      "https://www.instagram.com/duetoacademiademusica/",
+      "https://www.youtube.com/@duetoacademiademusica",
+      MAPS_PLACE_URL,
+    ],
+    makesOffer: [
+      { "@type": "Offer", itemOffered: { "@type": "Course", name: "Aulas de violino" } },
+      { "@type": "Offer", itemOffered: { "@type": "Course", name: "Aulas de viola de arco" } },
+      { "@type": "Offer", itemOffered: { "@type": "Course", name: "Aulas de violoncelo" } },
+      { "@type": "Offer", itemOffered: { "@type": "Course", name: "Aulas de violão" } },
+      { "@type": "Offer", itemOffered: { "@type": "Course", name: "Aulas de piano" } },
+    ],
+  };
 
   return (
     <div className="bg-[#FAF6EF]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
 
       {/* --- 01 - HERO ------------------------------------------------------ */}
       <section className="relative w-full min-h-[100svh] overflow-hidden flex flex-col" aria-label="Dueto Academia de Música">
@@ -197,6 +252,11 @@ export default async function DuetoHomePage() {
                 para aprender — existe o tempo de cada pessoa, e nós o respeitamos.
               </p>
               <p>
+                A Dueto oferece aulas de música em Brasília para crianças, jovens
+                e adultos, com cursos de violino, viola de arco, violoncelo,
+                violão e piano.
+              </p>
+              <p>
                 O ensino personalizado é o coração da nossa escola. Cada aula é
                 pensada a partir dos objetivos, da história e da personalidade do
                 aluno. Trabalhamos com técnica rigorosa, mas sempre com leveza e
@@ -252,11 +312,11 @@ export default async function DuetoHomePage() {
       <section className="py-20 lg:py-24 bg-[#F0EBE0]" aria-labelledby="gallery-heading">
         <div className="mx-auto max-w-6xl px-6 lg:px-16">
           <div className="mb-12 text-center">
-            <p id="gallery-heading" className="font-medium tracking-[0.22em] uppercase text-[#C8A878] flex items-center justify-center gap-2 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "28px" }}>
+            <h2 id="gallery-heading" className="font-medium tracking-[0.22em] uppercase text-[#C8A878] flex items-center justify-center gap-2 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "28px" }}>
               <span className="w-5 h-px bg-[#D4A843]/50" />
               Galeria
               <span className="w-5 h-px bg-[#D4A843]/50" />
-            </p>
+            </h2>
           </div>
 
           <GalleryCarousel images={galleryPhotos} intervalMs={5000} />

@@ -1,8 +1,5 @@
-﻿import { randomUUID } from "node:crypto";
-import { promises as fs } from "node:fs";
+﻿import { readFile } from "node:fs/promises";
 import path from "node:path";
-
-import { del, get, put } from "@vercel/blob";
 
 import {
   PHOTO_SECTION_KEYS,
@@ -15,13 +12,6 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "photo-library.json");
-const PUBLIC_DIR = path.resolve(process.cwd(), "public");
-const BLOB_LIBRARY_PATH = "dueto/photo-library.json";
-const BLOB_UPLOAD_PREFIX = "dueto/uploads";
-const BLOB_JSON_CACHE_SECONDS = 60;
-const BLOB_IMAGE_CACHE_SECONDS = 60 * 60 * 24 * 365;
-const DEFAULT_FOCAL_POSITION = 50;
-const DEFAULT_ZOOM = 100;
 const MIN_ZOOM = 50;
 const MAX_ZOOM = 200;
 
@@ -244,10 +234,6 @@ function deepCloneDefaults(): PhotoLibrary {
   return JSON.parse(JSON.stringify(DEFAULT_LIBRARY)) as PhotoLibrary;
 }
 
-function isPhotoSectionKey(value: string): value is PhotoSectionKey {
-  return (PHOTO_SECTION_KEYS as readonly string[]).includes(value);
-}
-
 function normalizePercentage(value: unknown): number | null {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return null;
@@ -275,15 +261,21 @@ function normalizeItem(item: unknown): PhotoItem | null {
   const focalX = normalizePercentage(candidate.focalX);
   const focalY = normalizePercentage(candidate.focalY);
   const zoom = normalizeZoom(candidate.zoom);
+  const mobileFocalX = normalizePercentage(candidate.mobileFocalX);
+  const mobileFocalY = normalizePercentage(candidate.mobileFocalY);
+  const mobileZoom = normalizeZoom(candidate.mobileZoom);
   if (!src) return null;
 
   return {
-    id: typeof candidate.id === "string" && candidate.id ? candidate.id : randomUUID(),
+    id: typeof candidate.id === "string" && candidate.id ? candidate.id : src,
     src,
     alt,
     ...(focalX !== null ? { focalX } : {}),
     ...(focalY !== null ? { focalY } : {}),
     ...(zoom !== null ? { zoom } : {}),
+    ...(mobileFocalX !== null ? { mobileFocalX } : {}),
+    ...(mobileFocalY !== null ? { mobileFocalY } : {}),
+    ...(mobileZoom !== null ? { mobileZoom } : {}),
   };
 }
 
@@ -309,6 +301,18 @@ function mergeFallbackItemDefaults(item: PhotoItem, fallbackItem: PhotoItem | un
 
   if (typeof merged.zoom !== "number" && typeof fallbackItem.zoom === "number") {
     merged.zoom = fallbackItem.zoom;
+  }
+
+  if (typeof merged.mobileFocalX !== "number" && typeof fallbackItem.mobileFocalX === "number") {
+    merged.mobileFocalX = fallbackItem.mobileFocalX;
+  }
+
+  if (typeof merged.mobileFocalY !== "number" && typeof fallbackItem.mobileFocalY === "number") {
+    merged.mobileFocalY = fallbackItem.mobileFocalY;
+  }
+
+  if (typeof merged.mobileZoom !== "number" && typeof fallbackItem.mobileZoom === "number") {
+    merged.mobileZoom = fallbackItem.mobileZoom;
   }
 
   return merged;
@@ -356,30 +360,9 @@ function normalizeLibrary(raw: unknown): PhotoLibrary {
   return normalized;
 }
 
-function blobToken(): string | undefined {
-  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
-  if (!token) return undefined;
-
-  const first = token[0];
-  const last = token[token.length - 1];
-  if ((first === "\"" || first === "'") && first === last) {
-    return token.slice(1, -1).trim();
-  }
-
-  return token;
-}
-
-function hasBlobStorage(): boolean {
-  return Boolean(blobToken());
-}
-
-async function readFallbackPhotoLibrary(): Promise<PhotoLibrary> {
-  return (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
-}
-
 async function readLocalPhotoLibrary(): Promise<PhotoLibrary | null> {
   try {
-    const content = await fs.readFile(DATA_FILE, "utf8");
+    const content = await readFile(DATA_FILE, "utf8");
     const parsed: unknown = JSON.parse(content);
     return normalizeLibrary(parsed);
   } catch {
@@ -387,213 +370,6 @@ async function readLocalPhotoLibrary(): Promise<PhotoLibrary | null> {
   }
 }
 
-async function readBlobTextWithAccess(
-  pathname: string,
-  access: "public" | "private",
-): Promise<string | null> {
-  const result = await get(pathname, {
-    access,
-    token: blobToken(),
-    useCache: false,
-  });
-
-  if (!result || result.statusCode !== 200 || !result.stream) {
-    return null;
-  }
-
-  return new Response(result.stream).text();
-}
-
-async function readBlobText(pathname: string): Promise<string | null> {
-  try {
-    return await readBlobTextWithAccess(pathname, "public");
-  } catch {
-    // The store can be private while images are still being migrated.
-  }
-
-  return readBlobTextWithAccess(pathname, "private");
-}
-
-async function readBlobPhotoLibrary(): Promise<PhotoLibrary | null> {
-  const content = await readBlobText(BLOB_LIBRARY_PATH);
-  if (!content) return null;
-
-  const parsed: unknown = JSON.parse(content);
-  return normalizeLibrary(parsed);
-}
-
-async function writeBlobPhotoLibrary(library: PhotoLibrary): Promise<void> {
-  const normalized = normalizeLibrary(library);
-  const serialized = JSON.stringify(normalized, null, 2);
-
-  await put(BLOB_LIBRARY_PATH, serialized, {
-    access: "public",
-    allowOverwrite: true,
-    contentType: "application/json; charset=utf-8",
-    cacheControlMaxAge: BLOB_JSON_CACHE_SECONDS,
-    token: blobToken(),
-  });
-}
-
-async function seedBlobPhotoLibrary(): Promise<PhotoLibrary> {
-  const library = await readFallbackPhotoLibrary();
-  await writeBlobPhotoLibrary(library);
-  return library;
-}
-
-export async function ensurePhotoLibraryFile(): Promise<void> {
-  if (hasBlobStorage()) {
-    try {
-      const library = await readBlobPhotoLibrary();
-      if (!library) {
-        await seedBlobPhotoLibrary();
-      }
-    } catch {
-      // GET requests can continue with the bundled fallback if Blob is not ready.
-    }
-
-    return;
-  }
-
-  await fs.mkdir(DATA_DIR, { recursive: true });
-
-  try {
-    await fs.access(DATA_FILE);
-  } catch {
-    const data = JSON.stringify(DEFAULT_LIBRARY, null, 2);
-    await fs.writeFile(DATA_FILE, data, "utf8");
-  }
-}
-
 export async function readPhotoLibrary(): Promise<PhotoLibrary> {
-  if (hasBlobStorage()) {
-    try {
-      const library = await readBlobPhotoLibrary();
-      if (library) return library;
-
-      return await seedBlobPhotoLibrary();
-    } catch {
-      return readFallbackPhotoLibrary();
-    }
-  }
-
-  await ensurePhotoLibraryFile();
-  return readFallbackPhotoLibrary();
-}
-
-export async function writePhotoLibrary(library: PhotoLibrary): Promise<void> {
-  const normalized = normalizeLibrary(library);
-
-  if (hasBlobStorage()) {
-    await writeBlobPhotoLibrary(normalized);
-    return;
-  }
-
-  const serialized = JSON.stringify(normalized, null, 2);
-  await fs.writeFile(DATA_FILE, serialized, "utf8");
-}
-
-export function createPhotoItem(src: string, alt: string): PhotoItem {
-  return {
-    id: randomUUID(),
-    src,
-    alt,
-    focalX: DEFAULT_FOCAL_POSITION,
-    focalY: DEFAULT_FOCAL_POSITION,
-    zoom: DEFAULT_ZOOM,
-  };
-}
-
-export function assertSectionKey(section: string): PhotoSectionKey | null {
-  return isPhotoSectionKey(section) ? section : null;
-}
-
-export function resolvePublicPathFromSrc(src: string): string | null {
-  if (!src.startsWith("/")) return null;
-
-  const relativePath = src.replace(/^\/+/, "");
-  const absolutePath = path.resolve(PUBLIC_DIR, relativePath);
-  const normalizedRoot = PUBLIC_DIR.toLowerCase();
-  const normalizedTarget = absolutePath.toLowerCase();
-  const insideRoot =
-    normalizedTarget === normalizedRoot ||
-    normalizedTarget.startsWith(`${normalizedRoot}${path.sep.toLowerCase()}`);
-
-  if (!insideRoot) return null;
-  return absolutePath;
-}
-
-function resolveBlobUploadPathname(src: string): string | null {
-  if (src.startsWith(`${BLOB_UPLOAD_PREFIX}/`)) {
-    return src;
-  }
-
-  try {
-    const url = new URL(src);
-    if (!url.hostname.endsWith(".blob.vercel-storage.com")) return null;
-
-    const pathname = url.pathname.replace(/^\/+/, "");
-    return pathname.startsWith(`${BLOB_UPLOAD_PREFIX}/`) ? pathname : null;
-  } catch {
-    return null;
-  }
-}
-
-export async function writeManagedPhotoFile(
-  sectionKey: PhotoSectionKey,
-  fileName: string,
-  fileBuffer: Buffer,
-  contentType: string,
-): Promise<string> {
-  if (hasBlobStorage()) {
-    const pathname = `${BLOB_UPLOAD_PREFIX}/${sectionKey}/${fileName}`;
-    const blob = await put(pathname, fileBuffer, {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: false,
-      contentType,
-      cacheControlMaxAge: BLOB_IMAGE_CACHE_SECONDS,
-      token: blobToken(),
-    });
-
-    return blob.url;
-  }
-
-  const relativeDirectory = path.join("images", "dueto", "uploads", sectionKey);
-  const absoluteDirectory = path.join(PUBLIC_DIR, relativeDirectory);
-  const absoluteFilePath = path.join(absoluteDirectory, fileName);
-
-  await fs.mkdir(absoluteDirectory, { recursive: true });
-  await fs.writeFile(absoluteFilePath, fileBuffer);
-
-  return `/${relativeDirectory.replace(/\\/g, "/")}/${fileName}`;
-}
-
-export async function removeManagedFileIfExists(src: string): Promise<void> {
-  const blobPathname = resolveBlobUploadPathname(src);
-  if (blobPathname && hasBlobStorage()) {
-    try {
-      await del(src, { token: blobToken() });
-    } catch (error) {
-      console.error("Falha ao remover foto do Vercel Blob.", error);
-    }
-
-    return;
-  }
-
-  if (hasBlobStorage()) return;
-
-  if (!src.startsWith("/images/dueto/uploads/")) return;
-
-  const filePath = resolvePublicPathFromSrc(src);
-  if (!filePath) return;
-
-  try {
-    await fs.unlink(filePath);
-  } catch (error) {
-    const nodeError = error as NodeJS.ErrnoException;
-    if (nodeError.code !== "ENOENT") {
-      throw error;
-    }
-  }
+  return (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
 }

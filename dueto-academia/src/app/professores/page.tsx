@@ -4,13 +4,37 @@ import Link from "next/link";
 import { GraduationCap, Award, Music, ArrowRight } from "lucide-react";
 import { InstagramIcon, YoutubeIcon } from "@/components/dueto/SocialBrandIcons";
 import { readPhotoLibrary } from "@/lib/photoLibrary";
+import { siteConfig } from "@/lib/siteMetadata";
 
 export const metadata: Metadata = {
   title: "Professores",
-  description: "Conheca os professores da Dueto Academia de Musica em Brasilia.",
+  description:
+    "Conheça os professores da Dueto Academia de Música em Brasília, com aulas de violino, viola, violoncelo, violão e piano.",
+  alternates: {
+    canonical: "/professores",
+  },
+  openGraph: {
+    title: "Professores | Dueto Academia",
+    description:
+      "Conheça a equipe de professores de música da Dueto Academia em Brasília.",
+    url: "/professores",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Professores da Dueto Academia de Música",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Professores | Dueto Academia",
+    description:
+      "Conheça a equipe de professores da Dueto Academia de Música.",
+    images: [siteConfig.ogImage],
+  },
 };
-
-export const dynamic = "force-dynamic";
 
 const TEACHER_PHOTO_SECTIONS = {
   guilherme: "professores_guilherme",

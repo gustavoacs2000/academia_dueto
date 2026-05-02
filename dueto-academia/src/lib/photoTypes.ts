@@ -49,6 +49,9 @@ export type PhotoItem = {
   focalX?: number;
   focalY?: number;
   zoom?: number;
+  mobileFocalX?: number;
+  mobileFocalY?: number;
+  mobileZoom?: number;
 };
 
 export type PhotoSection = {

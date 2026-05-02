@@ -1,59 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dueto Academia
 
-## Getting Started
+Site institucional em Next.js com exportação estática para Cloudflare Pages.
 
-First, run the development server:
+## Desenvolvimento
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build de produção
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+O `next.config.ts` usa `output: "export"`, então o build gera a pasta `out`, que deve ser publicada no Cloudflare Pages.
 
-To learn more about Next.js, take a look at the following resources:
+Configuração recomendada no Cloudflare Pages:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Root directory: `dueto-academia`
+- Build command: `npm run build`
+- Build output directory: `out`
+- Node.js: 20 ou 22
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Conteúdo e imagens
 
-## Deploy on Vercel
+O site não usa backend, API interna, storage remoto ou painel de upload em produção. As imagens e textos são versionados no Git:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Comprima a imagem antes de adicionar ao projeto.
+2. Salve em `public/images/dueto/...`.
+3. Atualize a referência em `data/photo-library.json` ou diretamente no código.
+4. Rode `npm run lint` e `npm run build`.
+5. Faça commit e push para publicar pela Cloudflare Pages.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## SEO
 
-## Painel simples de fotos
-
-Foi adicionado um painel interno em `/admin/fotos` para gerenciar imagens por seção do site:
-
-- Home • Abertura
-- Home • Filosofia
-- Home • Galeria
-- Contato • Foto principal
-
-### Como usar
-
-1. Crie um `.env.local` usando `.env.example`.
-2. Defina `PHOTO_ADMIN_TOKEN` com um valor forte.
-3. Rode `npm run dev`.
-4. Acesse `http://localhost:3000/admin/fotos`.
-5. Informe o token, carregue as fotos, e depois adicione/exclua as imagens.
-
-Observação:
-- Upload e exclusão funcionam em `public/images/dueto/uploads/...`.
-- Seções de foto única substituem a foto anterior automaticamente.
-- Em desenvolvimento local, sem `BLOB_READ_WRITE_TOKEN`, o painel usa `data/photo-library.json` e `public/images/dueto/uploads/...`.
-- Em producao na Vercel, configure Vercel Blob e a variavel `BLOB_READ_WRITE_TOKEN`; nesse modo, fotos e `dueto/photo-library.json` sao salvos no Blob.
+Os arquivos `src/app/robots.ts` e `src/app/sitemap.ts` são gerados no build. O domínio canônico configurado é `https://duetoacademia.com.br`.
