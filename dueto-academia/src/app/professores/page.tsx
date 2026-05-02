@@ -21,6 +21,11 @@ const TEACHER_PHOTO_SECTIONS = {
   alfredo: "professores_alfredo",
 } as const;
 
+const TEACHER_PHOTO_DEFAULTS = {
+  lucas: { focalX: 58, focalY: 50 },
+  alfredo: { focalX: 42, focalY: 50 },
+} as const;
+
 function objectStyleFromPhoto(photo: { focalX?: number; focalY?: number; zoom?: number }) {
   const focalX = typeof photo.focalX === "number" ? Math.max(0, Math.min(100, photo.focalX)) : 50;
   const focalY = typeof photo.focalY === "number" ? Math.max(0, Math.min(100, photo.focalY)) : 50;
@@ -184,22 +189,35 @@ export default async function ProfessoresPage() {
           Os professores da{" "}
           <em className="italic text-[#D4A843]/85" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Dueto</em>
         </h1>
-        <p className="text-white/45 text-sm max-w-xl mx-auto mt-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Dois músicos com formação sólida, anos de palco e um amor genuíno por ensinar.
-        </p>
       </div>
 
       {/* ── Teacher cards ── */}
-      <div className="mx-auto max-w-6xl px-6 lg:px-16 py-20 lg:py-28 flex flex-col gap-20">
+      <div>
         {TEACHERS.map((teacher, index) => {
           const photoSection = TEACHER_PHOTO_SECTIONS[teacher.id as keyof typeof TEACHER_PHOTO_SECTIONS];
           const libraryPhoto = photoLibrary[photoSection].items[0];
-          const teacherPhoto = libraryPhoto ?? { src: teacher.imageSrc, alt: teacher.imageAlt };
+          const photoDefaults = TEACHER_PHOTO_DEFAULTS[
+            teacher.id as keyof typeof TEACHER_PHOTO_DEFAULTS
+          ] as { focalX?: number; focalY?: number; zoom?: number } | undefined;
+          const teacherPhoto = {
+            ...(libraryPhoto ?? { src: teacher.imageSrc, alt: teacher.imageAlt }),
+            focalX: libraryPhoto?.focalX ?? photoDefaults?.focalX,
+            focalY: libraryPhoto?.focalY ?? photoDefaults?.focalY,
+            zoom: libraryPhoto?.zoom ?? photoDefaults?.zoom,
+          };
+          const background =
+            index % 2 === 0
+              ? "linear-gradient(180deg, #FAF6EF 0%, #F7F1E8 100%)"
+              : "linear-gradient(180deg, #F4EFE6 0%, #FAF6EF 100%)";
           const isEven = index % 2 === 0;
           return (
-            <div
+            <section
               key={teacher.id}
-              className={`grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-start ${!isEven ? "lg:[&>*:first-child]:order-2" : ""}`}
+              className="px-6 lg:px-16 py-16 lg:py-24"
+              style={{ background }}
+            >
+            <div
+              className={`mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-start ${!isEven ? "lg:[&>*:first-child]:order-2" : ""}`}
             >
               {/* Photo */}
               <div className="relative">
@@ -219,7 +237,6 @@ export default async function ProfessoresPage() {
                   <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to top, rgba(10,18,32,0.7), transparent)" }} />
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-white font-normal text-lg" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.02em" }}>{teacher.name}</p>
-                    <p className="text-white/50 text-[10px] mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{teacher.instrument}</p>
                   </div>
                 </div>
               </div>
@@ -234,14 +251,11 @@ export default async function ProfessoresPage() {
                 <h2 className="font-normal text-[#0F1820] mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.9rem, 3vw, 2.6rem)", fontWeight: 400 }}>
                   {teacher.name}
                 </h2>
-                <p className="text-sm italic text-[#C8A878] mb-7" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  {teacher.instrument}
-                </p>
 
                 {/* Bio */}
-                <div className="flex flex-col gap-3 mb-8">
+                <div className="flex flex-col gap-3 mb-8 mt-3">
                   {teacher.bio.map((p, i) => (
-                    <p key={i} className="text-sm leading-relaxed text-stone-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{p}</p>
+                    <p key={i} className="text-sm font-semibold leading-relaxed text-stone-600" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{p}</p>
                   ))}
                 </div>
 
@@ -298,17 +312,9 @@ export default async function ProfessoresPage() {
                 </div>
               </div>
             </div>
+            </section>
           );
         })}
-      </div>
-
-      {/* Quote */}
-      <div className="bg-[#0A1220] py-16 px-6 text-center">
-        <span className="text-5xl text-[#D4A843]/20 font-normal" style={{ fontFamily: "'Cormorant Garamond', serif" }}>"</span>
-        <p className="text-white/45 text-base italic max-w-lg mx-auto mt-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Ensinar música é abrir uma porta para uma linguagem que existe há séculos e nunca envelhece.
-        </p>
-        <p className="text-[#D4A843]/50 text-[10px] tracking-widest uppercase mt-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Equipe Dueto</p>
       </div>
     </div>
   );

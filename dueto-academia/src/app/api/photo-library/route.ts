@@ -14,7 +14,7 @@ import {
 export const runtime = "nodejs";
 
 const PUBLIC_DIR = path.resolve(process.cwd(), "public");
-const ADMIN_TOKEN = process.env.PHOTO_ADMIN_TOKEN ?? "dueto123";
+const ADMIN_TOKEN = process.env.PHOTO_ADMIN_TOKEN?.trim() || "dueto123";
 
 function unauthorized() {
   return NextResponse.json(
@@ -24,7 +24,10 @@ function unauthorized() {
 }
 
 function ensureAuthorized(request: Request): boolean {
-  const provided = request.headers.get("x-admin-token");
+  const headerToken = request.headers.get("x-admin-token")?.trim();
+  const bearerToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+  const provided = headerToken || bearerToken;
+
   return Boolean(provided && provided === ADMIN_TOKEN);
 }
 

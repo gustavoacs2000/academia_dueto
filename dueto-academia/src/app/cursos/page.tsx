@@ -83,7 +83,7 @@ const COURSES = [
     teacher: "Guilherme Alexander, Jordana Rodrigues e Gabriel Mendes",
     highlight: "Curso destaque da Dueto",
     bgFrom: "#FAF6EF",
-    bgTo: "#F0EBE0",
+    bgTo: "#F3EEE5",
   },
   {
     id: "viola",
@@ -112,8 +112,8 @@ const COURSES = [
     ],
     teacher: "Equipe de violino da Dueto",
     highlight: null,
-    bgFrom: "#F0EBE0",
-    bgTo: "#FAF6EF",
+    bgFrom: "#F7F1E8",
+    bgTo: "#EFE9DE",
   },
   {
     id: "violoncelo",
@@ -143,7 +143,7 @@ const COURSES = [
     teacher: "Hellen Alvares",
     highlight: null,
     bgFrom: "#FAF6EF",
-    bgTo: "#F0EBE0",
+    bgTo: "#F3EEE5",
   },
   {
     id: "violao",
@@ -173,8 +173,8 @@ const COURSES = [
     ],
     teacher: "Lucas Rezende",
     highlight: "Aceita iniciantes de qualquer idade",
-    bgFrom: "#F0EBE0",
-    bgTo: "#FAF6EF",
+    bgFrom: "#F7F1E8",
+    bgTo: "#EFE9DE",
   },
   {
     id: "piano",
@@ -205,7 +205,7 @@ const COURSES = [
     teacher: "Alfredo Siqueira",
     highlight: null,
     bgFrom: "#FAF6EF",
-    bgTo: "#F0EBE0",
+    bgTo: "#F3EEE5",
   },
 ];
 // --- Stars component ──────────────────────────────────────────────────────────
@@ -258,7 +258,7 @@ export default async function CursosPage() {
       </div>
 
       {/* Course sections */}
-      {COURSES.map((course, index) => {
+      {COURSES.map((course) => {
         const photoConfig = COURSE_PHOTO_SECTIONS[course.id as keyof typeof COURSE_PHOTO_SECTIONS];
         const libraryPhoto = photoLibrary[photoConfig.section].items[0];
         const coursePhoto = libraryPhoto ?? photoConfig;
@@ -272,7 +272,7 @@ export default async function CursosPage() {
           aria-labelledby={`${course.id}-heading`}
         >
           <div className="mx-auto max-w-6xl">
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 ${index % 2 !== 0 ? "lg:[&>*:first-child]:order-2" : ""}`}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
 
               {/* Left — main info */}
               <div>
@@ -321,6 +321,26 @@ export default async function CursosPage() {
                   Matricular-se em {course.name}
                   <ArrowRight size={13} />
                 </Link>
+
+                {/* Levels */}
+                <div className="mt-6 rounded-2xl border border-[#1A2E4A]/8 bg-white p-6">
+                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Turmas disponíveis</p>
+                  <div className="flex flex-col gap-3">
+                    {course.levels.map((level, i) => (
+                      <div key={i} className="flex items-start justify-between gap-3 pb-3 border-b border-stone-50 last:border-b-0 last:pb-0">
+                        <div>
+                          <p className="text-sm font-medium text-[#0F1820]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{level.name}</p>
+                          <p className="text-xs text-stone-400 mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{level.desc}</p>
+                        </div>
+                        <div className="flex gap-0.5 shrink-0">
+                          {Array.from({ length: course.levels.length }).map((_, j) => (
+                            <div key={j} className={`w-1.5 h-1.5 rounded-full ${j <= i ? "bg-[#1A2E4A]/40" : "bg-stone-100"}`} />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Right — content + levels */}
@@ -355,26 +375,6 @@ export default async function CursosPage() {
                   </div>
                 </div>
 
-                {/* Levels */}
-                <div className="rounded-2xl border border-[#1A2E4A]/8 bg-white p-6">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase text-stone-400 mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Turmas disponíveis</p>
-                  <div className="flex flex-col gap-3">
-                    {course.levels.map((level, i) => (
-                      <div key={i} className="flex items-start justify-between gap-3 pb-3 border-b border-stone-50 last:border-b-0 last:pb-0">
-                        <div>
-                          <p className="text-sm font-medium text-[#0F1820]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{level.name}</p>
-                          <p className="text-xs text-stone-400 mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{level.desc}</p>
-                        </div>
-                        <div className="flex gap-0.5 shrink-0">
-                          {Array.from({ length: course.levels.length }).map((_, j) => (
-                            <div key={j} className={`w-1.5 h-1.5 rounded-full ${j <= i ? "bg-[#1A2E4A]/40" : "bg-stone-100"}`} />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Teacher */}
                 <p className="text-xs text-stone-400 text-right" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Ministrado por <span className="text-[#1A2E4A]/60 font-medium">{course.teacher}</span>
@@ -386,21 +386,6 @@ export default async function CursosPage() {
         </section>
         );
       })}
-
-      {/* CTA final */}
-      <div className="bg-[#0A1220] py-20 text-center px-6">
-        <h2 className="font-normal text-white mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 400 }}>
-          Não sabe qual instrumento escolher?
-        </h2>
-        <p className="text-white/42 text-sm max-w-md mx-auto mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Agende uma aula experimental gratuita e nossos professores vão te ajudar a encontrar o instrumento certo para o seu perfil.
-        </p>
-        <Link href="/contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#D4A843] text-[#0A1220] text-sm font-medium hover:bg-[#e6bc5a] transition-all" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Agendar aula experimental gratuita
-          <ArrowRight size={14} />
-        </Link>
-      </div>
-
     </div>
   );
 }

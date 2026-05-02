@@ -152,16 +152,10 @@ export default async function DuetoHomePage() {
             Brasília — DF · Desde 2015
           </p>
 
-          <h1 className="font-normal leading-[1.04] text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.6rem, 6vw, 4.2rem)", fontWeight: 400, letterSpacing: "-0.01em" }}>
+          <h1 className="font-normal leading-[1.04] text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(3.4rem, 10vw, 4.8rem)", fontWeight: 400, letterSpacing: "-0.01em" }}>
             Dueto Academia<br />
             <em className="italic text-[#D4A843]/90" style={{ fontFamily: "'Cormorant Garamond', serif" }}>de Música</em>
           </h1>
-
-          <p className="text-white/72 text-base leading-relaxed max-w-xl mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Aprenda violino, viola de arco, violoncelo, violão e piano.
-            A Dueto é um espaço acolhedor e inspirador para alunos
-            a partir de 5 anos.
-          </p>
 
           <div className="flex flex-wrap gap-3">
             <Link href="/cursos" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#0F1820] text-sm font-medium hover:bg-stone-100 transition-all duration-200" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -193,10 +187,10 @@ export default async function DuetoHomePage() {
             </p>
             <h2 id="filosofia-heading" className="font-normal leading-tight text-[#0F1820] mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)", fontWeight: 400 }}>
               Cada aluno aprende no{" "}
-              <em className="italic text-[#1A2E4A]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>seu tempo.</em>
+              <em className="italic text-[#0F1820]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>seu tempo.</em>
             </h2>
 
-            <div className="flex flex-col gap-4 text-sm leading-relaxed text-stone-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <div className="flex flex-col gap-4 text-sm leading-relaxed text-stone-500 text-justify" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               <p>
                 Na Dueto, acreditamos que a música é uma linguagem que pertence
                 a todos. Não existe idade certa para começar, nem ritmo correto
@@ -218,16 +212,17 @@ export default async function DuetoHomePage() {
               </p>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-6">
+            <div className="mt-9 grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
                 { value: "10+", label: "Anos de história"     },
                 { value: "200+", label: "Alunos formados"     },
                 { value: "5",   label: "Instrumentos"         },
                 { value: "5★",  label: "Avaliação no Google"  },
               ].map(({ value, label }) => (
-                <div key={label} className="flex flex-col gap-0.5">
-                  <span className="font-normal text-[#0F1820] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem" }}>{value}</span>
-                  <span className="text-[10px] text-stone-400" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{label}</span>
+                <div key={label} className="relative overflow-hidden rounded-2xl border border-[#1A2E4A]/8 bg-white/70 px-4 py-4 shadow-sm shadow-[#1A2E4A]/5">
+                  <div className="absolute inset-x-0 top-0 h-1 bg-[#D4A843]/55" />
+                  <span className="font-normal text-[#0F1820] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem" }}>{value}</span>
+                  <span className="mt-1 block text-[10px] text-stone-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{label}</span>
                 </div>
               ))}
             </div>
@@ -254,18 +249,14 @@ export default async function DuetoHomePage() {
       </section>
 
       {/* --- 03 - MURAL DE FOTOS -------------------------------------------- */}
-      <section className="py-20 lg:py-28 bg-[#F0EBE0]" aria-labelledby="gallery-heading">
+      <section className="py-20 lg:py-24 bg-[#F0EBE0]" aria-labelledby="gallery-heading">
         <div className="mx-auto max-w-6xl px-6 lg:px-16">
           <div className="mb-12 text-center">
-            <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#C8A878] flex items-center justify-center gap-2 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <p id="gallery-heading" className="font-medium tracking-[0.22em] uppercase text-[#C8A878] flex items-center justify-center gap-2 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "28px" }}>
               <span className="w-5 h-px bg-[#D4A843]/50" />
               Galeria
               <span className="w-5 h-px bg-[#D4A843]/50" />
             </p>
-            <h2 id="gallery-heading" className="font-normal text-[#0F1820]" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 400 }}>
-              Nossa academia em{" "}
-              <em className="italic text-[#1A2E4A]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>imagens</em>
-            </h2>
           </div>
 
           <GalleryCarousel images={galleryPhotos} intervalMs={5000} />
@@ -311,7 +302,7 @@ export default async function DuetoHomePage() {
                 <Stars count={review.rating} />
 
                 {/* Text */}
-                <p className="text-sm leading-relaxed text-stone-500 my-4 flex-1 italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-base leading-relaxed text-stone-700 my-4 flex-1 italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   &ldquo;{review.text}&rdquo;
                 </p>
 

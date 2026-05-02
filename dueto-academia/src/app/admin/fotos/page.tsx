@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   PHOTO_SECTION_KEYS,
@@ -24,6 +24,7 @@ const DEFAULT_FOCAL = 50;
 const DEFAULT_ZOOM = 100;
 const MIN_ZOOM = 50;
 const MAX_ZOOM = 200;
+const TOKEN_STORAGE_KEY = "dueto-photo-admin-token";
 
 const SECTION_PREVIEW_SPEC: Record<PhotoSectionKey, PreviewSpec> = {
   home_hero: {
@@ -162,6 +163,7 @@ function buildPositionState(library: PhotoLibrary): PositionState {
 
 export default function AdminFotosPage() {
   const [token, setToken] = useState("");
+  const [tokenReady, setTokenReady] = useState(false);
   const [library, setLibrary] = useState<PhotoLibrary>(() => emptyLibrary());
   const [uploadState, setUploadState] = useState<UploadState>(() => createEmptyUploadState());
   const [positionState, setPositionState] = useState<PositionState>({});
@@ -173,6 +175,22 @@ export default function AdminFotosPage() {
     () => PHOTO_SECTION_KEYS.some((sectionKey) => library[sectionKey].items.length > 0),
     [library],
   );
+
+  useEffect(() => {
+    setToken(window.localStorage.getItem(TOKEN_STORAGE_KEY) ?? "");
+    setTokenReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!tokenReady) return;
+
+    const trimmedToken = token.trim();
+    if (trimmedToken) {
+      window.localStorage.setItem(TOKEN_STORAGE_KEY, trimmedToken);
+    } else {
+      window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+  }, [token, tokenReady]);
 
   const loadLibrary = useCallback(async () => {
     setLoading(true);
@@ -240,7 +258,7 @@ export default function AdminFotosPage() {
       }
 
       if (!token.trim()) {
-        setError("Informe o token de administrador para enviar ou excluir fotos.");
+        setError("Informe o token de administrador para enviar, excluir ou salvar ajustes de fotos.");
         return;
       }
 
@@ -284,7 +302,7 @@ export default function AdminFotosPage() {
   const deletePhoto = useCallback(
     async (sectionKey: PhotoSectionKey, id: string) => {
       if (!token.trim()) {
-        setError("Informe o token de administrador para enviar ou excluir fotos.");
+        setError("Informe o token de administrador para enviar, excluir ou salvar ajustes de fotos.");
         return;
       }
 
@@ -320,7 +338,7 @@ export default function AdminFotosPage() {
   const savePhotoPosition = useCallback(
     async (sectionKey: PhotoSectionKey, id: string) => {
       if (!token.trim()) {
-        setError("Informe o token de administrador para enviar ou excluir fotos.");
+        setError("Informe o token de administrador para enviar, excluir ou salvar ajustes de fotos.");
         return;
       }
 
@@ -442,7 +460,7 @@ export default function AdminFotosPage() {
             className="text-[11px] text-stone-400 mt-2"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Se nao configurar variavel de ambiente, o token padrao e <strong>dueto123</strong>.
+            Use o valor configurado em <strong>PHOTO_ADMIN_TOKEN</strong>. Se a variavel nao existir no ambiente, o fallback e <strong>dueto123</strong>.
           </p>
         </div>
 

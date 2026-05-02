@@ -45,7 +45,14 @@ export default function DuetoNavbar() {
     }, [mobileOpen]);
 
     // fecha menu ao trocar de rota
-    useEffect(() => { setMobileOpen(false); setCoursesOpen(false); }, [pathname]);
+    useEffect(() => {
+        const timeout = window.setTimeout(() => {
+            setMobileOpen(false);
+            setCoursesOpen(false);
+        }, 0);
+
+        return () => window.clearTimeout(timeout);
+    }, [pathname]);
 
     const isActive = (href: string) =>
         href === "/" ? pathname === href : pathname.startsWith(href);
@@ -56,13 +63,13 @@ export default function DuetoNavbar() {
                 className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
                 style={{
                     background: scrolled
-                        ? "rgba(250,246,239,0.88)"
-                        : "rgba(250,246,239,0.70)",
+                        ? "rgba(255,252,247,0.97)"
+                        : "rgba(255,252,247,0.93)",
                     backdropFilter: "blur(16px)",
                     WebkitBackdropFilter: "blur(16px)",
                     borderBottom: scrolled
-                        ? "1px solid rgba(26,46,74,0.08)"
-                        : "1px solid transparent",
+                        ? "1px solid rgba(26,46,74,0.12)"
+                        : "1px solid rgba(26,46,74,0.06)",
                 }}
             >
                 <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
@@ -82,7 +89,7 @@ export default function DuetoNavbar() {
                     </Link>
 
                     {/* ── Desktop nav ── */}
-                    <nav className="hidden lg:flex items-center gap-1" aria-label="Navegação principal">
+                    <nav className="hidden lg:flex items-center gap-4" aria-label="Navegação principal">
                         {NAV_LINKS.map((link) => (
                             <div key={link.href} className="relative">
                                 {link.submenu ? (
@@ -94,16 +101,13 @@ export default function DuetoNavbar() {
                                     >
                                         <Link
                                             href={link.href}
-                                            className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1 ${isActive(link.href)
+                                            className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${isActive(link.href)
                                                     ? "text-[#1A2E4A] bg-[#1A2E4A]/6"
-                                                    : "text-[#0F1820]/60 hover:text-[#0F1820] hover:bg-[#1A2E4A]/4"
+                                                    : "text-[#0F1820]/78 hover:text-[#0F1820] hover:bg-[#1A2E4A]/4"
                                                 }`}
                                             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                                         >
                                             {link.label}
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="opacity-50">
-                                                <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
                                         </Link>
 
                                         {/* Dropdown */}
@@ -114,7 +118,7 @@ export default function DuetoNavbar() {
                                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                                     exit={{ opacity: 0, y: 4, scale: 0.97 }}
                                                     transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] as const }}
-                                                    className="absolute top-full left-0 mt-1 w-44 rounded-xl border border-[#1A2E4A]/8 bg-[#FAF6EF]/95 backdrop-blur-xl shadow-xl shadow-[#1A2E4A]/8 py-1.5 overflow-hidden"
+                                                    className="absolute top-full left-0 mt-2 w-44 rounded-xl border border-[#1A2E4A]/8 bg-[#FFFCF7]/97 backdrop-blur-xl shadow-xl shadow-[#1A2E4A]/8 py-1.5 overflow-hidden"
                                                 >
                                                     {link.submenu.map((sub) => (
                                                         <Link
@@ -135,9 +139,9 @@ export default function DuetoNavbar() {
                                     /* Links normais */
                                     <Link
                                         href={link.href}
-                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.href)
+                                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${isActive(link.href)
                                                 ? "text-[#1A2E4A] bg-[#1A2E4A]/6"
-                                                : "text-[#0F1820]/60 hover:text-[#0F1820] hover:bg-[#1A2E4A]/4"
+                                                : "text-[#0F1820]/78 hover:text-[#0F1820] hover:bg-[#1A2E4A]/4"
                                             }`}
                                         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                                     >
