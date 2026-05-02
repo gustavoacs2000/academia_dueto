@@ -304,6 +304,10 @@ function hasBlobStorage(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 }
 
+async function readFallbackPhotoLibrary(): Promise<PhotoLibrary> {
+  return (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
+}
+
 async function readLocalPhotoLibrary(): Promise<PhotoLibrary | null> {
   try {
     const content = await fs.readFile(DATA_FILE, "utf8");
@@ -314,9 +318,12 @@ async function readLocalPhotoLibrary(): Promise<PhotoLibrary | null> {
   }
 }
 
-async function readBlobText(pathname: string): Promise<string | null> {
+async function readBlobTextWithAccess(
+  pathname: string,
+  access: "public" | "private",
+): Promise<string | null> {
   const result = await get(pathname, {
-    access: "public",
+    access,
     useCache: false,
   });
 
@@ -325,6 +332,16 @@ async function readBlobText(pathname: string): Promise<string | null> {
   }
 
   return new Response(result.stream).text();
+}
+
+async function readBlobText(pathname: string): Promise<string | null> {
+  try {
+    return await readBlobTextWithAccess(pathname, "public");
+  } catch (publicError) {
+    console.error("Falha ao ler biblioteca no Blob publico. Tentando modo privado.", publicError);
+  }
+
+  return readBlobTextWithAccess(pathname, "private");
 }
 
 async function readBlobPhotoLibrary(): Promise<PhotoLibrary | null> {
@@ -348,16 +365,20 @@ async function writeBlobPhotoLibrary(library: PhotoLibrary): Promise<void> {
 }
 
 async function seedBlobPhotoLibrary(): Promise<PhotoLibrary> {
-  const library = (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
+  const library = await readFallbackPhotoLibrary();
   await writeBlobPhotoLibrary(library);
   return library;
 }
 
 export async function ensurePhotoLibraryFile(): Promise<void> {
   if (hasBlobStorage()) {
-    const library = await readBlobPhotoLibrary();
-    if (!library) {
-      await seedBlobPhotoLibrary();
+    try {
+      const library = await readBlobPhotoLibrary();
+      if (!library) {
+        await seedBlobPhotoLibrary();
+      }
+    } catch (error) {
+      console.error("Falha ao preparar biblioteca de fotos no Vercel Blob.", error);
     }
 
     return;
@@ -375,12 +396,19 @@ export async function ensurePhotoLibraryFile(): Promise<void> {
 
 export async function readPhotoLibrary(): Promise<PhotoLibrary> {
   if (hasBlobStorage()) {
-    const library = await readBlobPhotoLibrary();
-    return library ?? seedBlobPhotoLibrary();
+    try {
+      const library = await readBlobPhotoLibrary();
+      if (library) return library;
+
+      return await seedBlobPhotoLibrary();
+    } catch (error) {
+      console.error("Falha ao ler biblioteca de fotos no Vercel Blob. Usando fallback local.", error);
+      return readFallbackPhotoLibrary();
+    }
   }
 
   await ensurePhotoLibraryFile();
-  return (await readLocalPhotoLibrary()) ?? deepCloneDefaults();
+  return readFallbackPhotoLibrary();
 }
 
 export async function writePhotoLibrary(library: PhotoLibrary): Promise<void> {
