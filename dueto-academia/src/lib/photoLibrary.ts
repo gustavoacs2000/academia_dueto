@@ -27,7 +27,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-home-hero",
-        src: "/images/dueto/hero-home.jpeg",
+        src: "/images/dueto/uploads/home_hero/1776533458799-a65si0-hero-home.jpg",
         alt: "Aluna tocando violino na Dueto Academia de Musica",
       },
     ],
@@ -74,7 +74,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-contato-capa",
-        src: "/images/dueto/hero-dueto.jpeg",
+        src: "/images/dueto/contato-academia.jpeg",
         alt: "Entrada da Dueto Academia de Musica em Brasilia",
       },
     ],

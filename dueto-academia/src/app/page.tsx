@@ -12,7 +12,7 @@ const MAPS_REVIEWS_URL = "https://share.google/sxQ1tfg1loNyqrYFp";
 const MAPS_EMBED_URL =
   "https://www.google.com/maps?hl=pt-BR&q=QI%2025%2C%20bl.%20A%20-%20Ed.%20Real%20Mix%2C%20sala%20Cobertura%205%20-%20Guar%C3%A1%202%2C%20Bras%C3%ADlia%20-%20DF&z=17&output=embed";
 const HERO_FALLBACK = {
-  src: "/images/dueto/hero-home.png",
+  src: "/images/dueto/uploads/home_hero/1776533458799-a65si0-hero-home.jpg",
   alt: "Aluna tocando violino na Dueto Academia de Música",
 };
 const FILOSOFIA_FALLBACK = {
