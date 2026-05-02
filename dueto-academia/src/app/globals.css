@@ -8,3 +8,20 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+.dueto-responsive-photo {
+  object-position: var(--dueto-photo-position, 50% 50%);
+  transform: var(--dueto-photo-transform, scale(1));
+  transform-origin: var(--dueto-photo-transform-origin, 50% 50%);
+}
+
+@media (max-width: 767px) {
+  .dueto-responsive-photo {
+    object-position: var(--dueto-photo-mobile-position, var(--dueto-photo-position, 50% 50%));
+    transform: var(--dueto-photo-mobile-transform, var(--dueto-photo-transform, scale(1)));
+    transform-origin: var(
+      --dueto-photo-mobile-transform-origin,
+      var(--dueto-photo-transform-origin, 50% 50%)
+    );
+  }
+}
