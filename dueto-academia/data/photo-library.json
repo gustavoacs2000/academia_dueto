@@ -6,10 +6,11 @@
     "items": [
       {
         "id": "93de27c1-3e2c-45d6-a13b-c0255ecbb7e3",
-        "src": "/images/dueto/uploads/home_hero/1776533458799-a65si0-hero-home.jpg",
-        "alt": "hero home",
-        "focalX": 0,
-        "focalY": 0
+        "src": "/images/dueto/uploads/home_hero/home.png",
+        "alt": "Aluna tocando violino na Dueto Academia de Musica",
+        "focalX": 50,
+        "focalY": 50,
+        "zoom": 100
       }
     ]
   },

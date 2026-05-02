@@ -27,7 +27,7 @@ const DEFAULT_LIBRARY: PhotoLibrary = {
     items: [
       {
         id: "default-home-hero",
-        src: "/images/dueto/uploads/home_hero/1776533458799-a65si0-hero-home.jpg",
+        src: "/images/dueto/uploads/home_hero/home.png",
         alt: "Aluna tocando violino na Dueto Academia de Musica",
       },
     ],
